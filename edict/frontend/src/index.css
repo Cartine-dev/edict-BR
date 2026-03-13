@@ -42,6 +42,8 @@ body {
 .chip.err { border-color: #ff527044; color: var(--danger); }
 .btn-refresh { font-size: 11px; padding: 4px 10px; border: 1px solid var(--acc); border-radius: 6px; background: transparent; color: var(--acc); cursor: pointer; }
 .btn-refresh:hover { background: #0a1228; }
+.lang-toggle { font-size: 11px; padding: 4px 10px; border: 1px solid var(--acc2); border-radius: 6px; background: transparent; color: var(--acc2); cursor: pointer; font-weight: 700; letter-spacing: .03em; transition: background .15s; }
+.lang-toggle:hover { background: #1a0f38; }
 
 /* ══ TABS ══ */
 .tabs { display: flex; gap: 2px; margin-bottom: 18px; border-bottom: 1px solid var(--line); overflow-x: auto; }
