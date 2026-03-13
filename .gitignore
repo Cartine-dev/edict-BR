@@ -31,3 +31,6 @@ edict/frontend/node_modules/
 # Backups
 *.bak*
 data
+
+# TS incremental build
+edict/frontend/tsconfig.tsbuildinfo
