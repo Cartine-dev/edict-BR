@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useStore, stateLabel } from '../store';
 import { useT } from '../i18n/hooks';
+import type { TranslationKey } from '../i18n/locales/zh';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -12,6 +13,14 @@ export default function OfficialPanel() {
   const setModalTaskId = useStore((s) => s.setModalTaskId);
 
   const T = useT();
+
+  // Presentation-layer display names with fallback to CN payload value
+  const roleText = (o: { id: string; role: string }) =>
+    T(`officials.role.${o.id}` as TranslationKey) || o.role;
+  const labelText = (o: { id: string; label: string }) =>
+    T(`officials.label.${o.id}` as TranslationKey) || o.label;
+  const hbLabel = (status: string) =>
+    T(`hb.${status}` as TranslationKey) || T('hb.unknown');
 
   useEffect(() => {
     loadOfficials();
@@ -39,7 +48,7 @@ export default function OfficialPanel() {
         <div className="off-activity">
           <span>{T('officials.activity.current_active')}</span>
           {alive.map((o) => (
-            <span key={o.id} style={{ fontSize: 12 }}>{o.emoji} {o.role}</span>
+            <span key={o.id} style={{ fontSize: 12 }}>{o.emoji} {roleText(o)}</span>
           ))}
           <span style={{ color: 'var(--muted)', fontSize: 11, marginLeft: 'auto' }}>{T('officials.activity.others_standby')}</span>
         </div>
@@ -85,8 +94,8 @@ export default function OfficialPanel() {
                 </span>
                 <span>{o.emoji}</span>
                 <span style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700 }}>{o.role}</div>
-                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{o.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700 }}>{roleText(o)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{labelText(o)}</div>
                 </span>
                 <span style={{ fontSize: 11 }}>{T('officials.merit_score', { n: o.merit_score })}</span>
                 <span className={`dc-dot ${hb.status}`} style={{ width: 8, height: 8 }} />
@@ -118,7 +127,11 @@ function OfficialDetail({
   onOpenTask: (id: string) => void;
 }) {
   const T = useT();
-  const hb = o.heartbeat || { status: 'idle', label: T('officials.detail.hb_idle') };
+  const hb = o.heartbeat || { status: 'idle' };
+  const hbLabel = (status: string) =>
+    T(`hb.${status}` as TranslationKey) || T('hb.unknown');
+  const roleText = T(`officials.role.${o.id}` as TranslationKey) || o.role;
+  const labelText = T(`officials.label.${o.id}` as TranslationKey) || o.label;
   const totTk = o.tokens_in + o.tokens_out + o.cache_read + o.cache_write;
   const edicts = o.participated_edicts || [];
 
@@ -135,16 +148,16 @@ function OfficialDetail({
       <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 20 }}>
         <div style={{ fontSize: 40 }}>{o.emoji}</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800 }}>{o.role}</div>
+          <div style={{ fontSize: 18, fontWeight: 800 }}>{roleText}</div>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-            {o.label} · <span style={{ color: 'var(--acc)' }}>{o.model_short || o.model}</span>
+            {labelText} · <span style={{ color: 'var(--acc)' }}>{o.model_short || o.model}</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>
             {T('officials.detail.rank_score', { rank: o.rank, score: o.merit_score })}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div className={`hb ${hb.status}`} style={{ marginBottom: 4 }}>{hb.label}</div>
+          <div className={`hb ${hb.status}`} style={{ marginBottom: 4 }}>{hbLabel(hb.status)}</div>
           {o.last_active && <div style={{ fontSize: 10, color: 'var(--muted)' }}>{T('officials.detail.last_active', { time: o.last_active })}</div>}
           <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 2 }}>
             {T('officials.detail.sessions_msgs', { sessions: o.sessions, messages: o.messages })}

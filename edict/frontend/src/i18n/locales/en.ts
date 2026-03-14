@@ -146,6 +146,37 @@ const en: Record<TranslationKey, string> = {
     'officials.detail.total_tokens': 'Total {n} tokens',
     'officials.detail.edicts_title': 'Participated Edicts ({n})',
     'officials.detail.edicts_empty': 'No edict records yet',
+
+    // ── Officials — display names by id (presentation layer only) ─────────────
+    'officials.role.taizi': 'Crown Prince',
+    'officials.role.zhongshu': 'Grand Chancellor',
+    'officials.role.menxia': 'Chief Attendant',
+    'officials.role.shangshu': 'Minister of State',
+    'officials.role.hubu': 'Minister of Revenue',
+    'officials.role.libu': 'Minister of Rites',
+    'officials.role.bingbu': 'Minister of War',
+    'officials.role.xingbu': 'Minister of Justice',
+    'officials.role.gongbu': 'Minister of Works',
+    'officials.role.libu_hr': 'Minister of Personnel',
+    'officials.role.zaochao': 'Morning Reporter',
+    'officials.label.taizi': 'Crown Prince',
+    'officials.label.zhongshu': 'Secretariat',
+    'officials.label.menxia': 'Chancellery',
+    'officials.label.shangshu': 'Dept. of State Affairs',
+    'officials.label.hubu': 'Revenue',
+    'officials.label.libu': 'Rites',
+    'officials.label.bingbu': 'War',
+    'officials.label.xingbu': 'Justice',
+    'officials.label.gongbu': 'Works',
+    'officials.label.libu_hr': 'Personnel',
+    'officials.label.zaochao': 'Imperial Observatory',
+
+    // ── Heartbeat status labels ───────────────────────────────────────────────
+    'hb.active': '🟢 Active',
+    'hb.idle': '⚪ Standby',
+    'hb.warn': '🟡 Possibly stalled',
+    'hb.offline': '🔴 Offline',
+    'hb.unknown': '❓ Unknown',
 };
 
 export default en;

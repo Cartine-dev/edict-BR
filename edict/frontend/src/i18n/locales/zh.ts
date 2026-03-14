@@ -148,6 +148,37 @@ const zh = {
     'officials.detail.total_tokens': '总计 {n} tokens',
     'officials.detail.edicts_title': '参与旨意（{n} 道）',
     'officials.detail.edicts_empty': '暂无旨意记录',
+
+    // ── Officials — display names by id (presentation layer only) ─────────────
+    'officials.role.taizi': '太子',
+    'officials.role.zhongshu': '中书令',
+    'officials.role.menxia': '侍中',
+    'officials.role.shangshu': '尚书令',
+    'officials.role.hubu': '户部尚书',
+    'officials.role.libu': '礼部尚书',
+    'officials.role.bingbu': '兵部尚书',
+    'officials.role.xingbu': '刑部尚书',
+    'officials.role.gongbu': '工部尚书',
+    'officials.role.libu_hr': '吏部尚书',
+    'officials.role.zaochao': '朝报官',
+    'officials.label.taizi': '太子',
+    'officials.label.zhongshu': '中书省',
+    'officials.label.menxia': '门下省',
+    'officials.label.shangshu': '尚书省',
+    'officials.label.hubu': '户部',
+    'officials.label.libu': '礼部',
+    'officials.label.bingbu': '兵部',
+    'officials.label.xingbu': '刑部',
+    'officials.label.gongbu': '工部',
+    'officials.label.libu_hr': '吏部',
+    'officials.label.zaochao': '钦天监',
+
+    // ── Heartbeat status labels ───────────────────────────────────────────────
+    'hb.active': '🟢 活跃',
+    'hb.idle': '⚪ 待命',
+    'hb.warn': '🟡 可能停滞',
+    'hb.offline': '🔴 离线',
+    'hb.unknown': '❓ 未知',
 } as const;
 
 export default zh;
