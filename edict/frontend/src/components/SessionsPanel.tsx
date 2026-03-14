@@ -2,6 +2,9 @@ import { useStore, isEdict, stateLabel, timeAgo } from '../store';
 import type { Task } from '../api';
 import { useState } from 'react';
 import { useT } from '../i18n/hooks';
+import type { TranslationKey } from '../i18n/locales/zh';
+
+type TFn = (key: TranslationKey, vars?: Record<string, string | number>) => string;
 
 // Agent maps built from agentConfig
 function useAgentMaps() {
@@ -23,28 +26,28 @@ function extractAgent(t: Task): string {
   return (t.org || '').replace(/省|部/g, '').toLowerCase();
 }
 
-function humanTitle(t: Task, labelMap: Record<string, string>): string {
+function humanTitle(t: Task, labelMap: Record<string, string>, T: TFn): string {
   let title = t.title || '';
-  if (title === 'heartbeat 会话') return '💓 心跳检测';
+  if (title === 'heartbeat 会话') return T('sessions.title.heartbeat');
   const m = title.match(/^agent:(\w+):(\w+)/);
   if (m) {
     const agLabel = labelMap[m[1]] || m[1];
-    if (m[2] === 'main') return agLabel + ' · 主会话';
-    if (m[2] === 'subagent') return agLabel + ' · 子任务执行';
-    if (m[2] === 'cron') return agLabel + ' · 定时任务';
+    if (m[2] === 'main') return agLabel + T('sessions.title.main');
+    if (m[2] === 'subagent') return agLabel + T('sessions.title.subagent');
+    if (m[2] === 'cron') return agLabel + T('sessions.title.cron');
     return agLabel + ' · ' + m[2];
   }
   return title.replace(/ 会话$/, '') || t.id;
 }
 
-function channelLabel(t: Task): { icon: string; text: string } {
+function channelLabel(t: Task, T: TFn): { icon: string; text: string } {
   const now = t.now || '';
-  if (now.includes('feishu/direct')) return { icon: '💬', text: '飞书对话' };
-  if (now.includes('feishu')) return { icon: '💬', text: '飞书' };
-  if (now.includes('webchat')) return { icon: '🌐', text: 'WebChat' };
-  if (now.includes('cron')) return { icon: '⏰', text: '定时' };
-  if (now.includes('direct')) return { icon: '📨', text: '直连' };
-  return { icon: '🔗', text: '会话' };
+  if (now.includes('feishu/direct')) return { icon: '💬', text: T('sessions.channel.feishu_direct') };
+  if (now.includes('feishu')) return { icon: '💬', text: T('sessions.channel.feishu') };
+  if (now.includes('webchat')) return { icon: '🌐', text: T('sessions.channel.webchat') };
+  if (now.includes('cron')) return { icon: '⏰', text: T('sessions.channel.cron') };
+  if (now.includes('direct')) return { icon: '📨', text: T('sessions.channel.direct') };
+  return { icon: '🔗', text: T('sessions.channel.session') };
 }
 
 function lastMessage(t: Task): string {
@@ -84,8 +87,8 @@ export default function SessionsPanel() {
       {/* Filters */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>
         {[
-          { key: 'all', label: `全部 (${sessions.length})` },
-          { key: 'active', label: '活跃' },
+          { key: 'all', label: T('sessions.filter.all', { n: sessions.length }) },
+          { key: 'active', label: T('sessions.filter.active') },
           ...agentIds.slice(0, 8).map((id) => ({ key: id, label: labelMap[id] || id })),
         ].map((f) => (
           <span
@@ -102,7 +105,7 @@ export default function SessionsPanel() {
       <div className="sess-grid">
         {!filtered.length ? (
           <div style={{ fontSize: 13, color: 'var(--muted)', padding: 24, textAlign: 'center', gridColumn: '1/-1' }}>
-            暂无小任务/会话数据
+            {T('sessions.empty')}
           </div>
         ) : (
           filtered.map((t) => {
@@ -110,8 +113,8 @@ export default function SessionsPanel() {
             const emoji = emojiMap[agent] || '🏛️';
             const agLabel = labelMap[agent] || t.org || agent;
             const hb = t.heartbeat || { status: 'unknown' as const, label: '' };
-            const ch = channelLabel(t);
-            const title = humanTitle(t, labelMap);
+            const ch = channelLabel(t, T);
+            const title = humanTitle(t, labelMap, T);
             const msg = lastMessage(t);
             const sm = t.sourceMeta || {};
             const totalTk = (sm as Record<string, unknown>).totalTokens as number | undefined;
@@ -174,8 +177,8 @@ function SessionDetailModal({
   const T = useT();
   const agent = extractAgent(t);
   const emoji = emojiMap[agent] || '🏛️';
-  const title = humanTitle(t, labelMap);
-  const ch = channelLabel(t);
+  const title = humanTitle(t, labelMap, T);
+  const ch = channelLabel(t, T);
   const hb = t.heartbeat || { status: 'unknown' as const, label: '' };
   const sm = t.sourceMeta || {};
   const acts = t.activity || [];
@@ -203,35 +206,39 @@ function SessionDetailModal({
             {totalTokens != null && (
               <div style={{ background: 'var(--panel2)', padding: '10px 16px', borderRadius: 8, fontSize: 12 }}>
                 <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--acc)' }}>{totalTokens.toLocaleString()}</div>
-                <div style={{ color: 'var(--muted)', fontSize: 10 }}>总 Tokens</div>
+                <div style={{ color: 'var(--muted)', fontSize: 10 }}>{T('sessions.stat.total_tokens')}</div>
               </div>
             )}
             {inputTokens != null && (
               <div style={{ background: 'var(--panel2)', padding: '10px 16px', borderRadius: 8, fontSize: 12 }}>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>{inputTokens.toLocaleString()}</div>
-                <div style={{ color: 'var(--muted)', fontSize: 10 }}>输入</div>
+                <div style={{ color: 'var(--muted)', fontSize: 10 }}>{T('sessions.stat.input')}</div>
               </div>
             )}
             {outputTokens != null && (
               <div style={{ background: 'var(--panel2)', padding: '10px 16px', borderRadius: 8, fontSize: 12 }}>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>{outputTokens.toLocaleString()}</div>
-                <div style={{ color: 'var(--muted)', fontSize: 10 }}>输出</div>
+                <div style={{ color: 'var(--muted)', fontSize: 10 }}>{T('sessions.stat.output')}</div>
               </div>
             )}
           </div>
 
           {/* Recent Activity */}
           <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>
-            📋 最近活动 <span style={{ fontWeight: 400, color: 'var(--muted)' }}>({acts.length} 条)</span>
+            {T('sessions.activity.title')} <span style={{ fontWeight: 400, color: 'var(--muted)' }}>{T('sessions.activity.count', { n: acts.length })}</span>
           </div>
           <div style={{ maxHeight: 350, overflowY: 'auto', border: '1px solid var(--line)', borderRadius: 10, background: 'var(--panel2)' }}>
             {!acts.length ? (
-              <div style={{ padding: 16, color: 'var(--muted)', fontSize: 12, textAlign: 'center' }}>暂无活动记录</div>
+              <div style={{ padding: 16, color: 'var(--muted)', fontSize: 12, textAlign: 'center' }}>{T('sessions.activity.empty')}</div>
             ) : (
               acts.slice(-15).reverse().map((a, i) => {
                 const kind = a.kind || '';
                 const kIcon = kind === 'assistant' ? '🤖' : kind === 'tool' ? '🔧' : kind === 'user' ? '👤' : '📝';
-                const kLabel = kind === 'assistant' ? '回复' : kind === 'tool' ? '工具' : kind === 'user' ? '用户' : '事件';
+                const kLabel =
+                  kind === 'assistant' ? T('sessions.activity.kind.assistant') :
+                    kind === 'tool' ? T('sessions.activity.kind.tool') :
+                      kind === 'user' ? T('sessions.activity.kind.user') :
+                        T('sessions.activity.kind.event');
                 let txt = (a.text || '').replace(/\[\[.*?\]\]/g, '').replace(/\*\*/g, '').trim();
                 if (txt.length > 200) txt = txt.substring(0, 200) + '…';
                 const time = ((a.at as string) || '').substring(11, 19);
