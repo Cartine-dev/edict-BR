@@ -95,6 +95,29 @@ const zh = {
     'edict.resume.done': '已恢复',
     'edict.archive': '📦 归档',
     'edict.unarchive': '📤 取消归档',
+
+    // ── Monitor panel ─────────────────────────────────────────────────────────
+    'monitor.agent_status.title': '🔌 Agent 在线状态',
+    'monitor.agent_status.gateway_unknown': '未知',
+    'monitor.agent_status.checked_at': '检测于 {time}',
+    'monitor.agent.no_activity': '无活动记录',
+    'monitor.agent.wake': '⚡ 唤醒',
+    'monitor.agent.wake_all': '⚡ 全部唤醒',
+    'monitor.agent.wake_sent': '唤醒指令已发出',
+    'monitor.agent.wake_failed': '唤醒失败',
+    'monitor.agent.all_online': '所有 Agent 均已在线',
+    'monitor.agent.waking_n': '正在唤醒 {n} 个 Agent…',
+    'monitor.agent.woke_n': '{n} 个唤醒指令已发出，30秒后刷新状态',
+    'monitor.agent.count.running': '{n} 运行中',
+    'monitor.agent.count.idle': '{n} 待命',
+    'monitor.agent.count.offline': '{n} 离线',
+    'monitor.agent.count.unconfigured': '{n} 未配置',
+    'monitor.dept.status.blocked': '⚠️ 阻塞',
+    'monitor.dept.status.doing': '⚙️ 执行中',
+    'monitor.dept.status.active': '🟢 活跃',
+    'monitor.dept.status.idle': '⚪ 候命',
+    'monitor.dept.idle_placeholder': '候命中',
+    'monitor.dept.model_unconfigured': '待配置',
 } as const;
 
 export default zh;

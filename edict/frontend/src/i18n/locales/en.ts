@@ -93,6 +93,29 @@ const en: Record<TranslationKey, string> = {
     'edict.resume.done': 'Resumed',
     'edict.archive': '📦 Archive',
     'edict.unarchive': '📤 Unarchive',
+
+    // ── Monitor panel ─────────────────────────────────────────────────────────
+    'monitor.agent_status.title': '🔌 Agent Online Status',
+    'monitor.agent_status.gateway_unknown': 'Unknown',
+    'monitor.agent_status.checked_at': 'Checked at {time}',
+    'monitor.agent.no_activity': 'No activity recorded',
+    'monitor.agent.wake': '⚡ Wake',
+    'monitor.agent.wake_all': '⚡ Wake All',
+    'monitor.agent.wake_sent': 'Wake command sent',
+    'monitor.agent.wake_failed': 'Wake failed',
+    'monitor.agent.all_online': 'All agents are online',
+    'monitor.agent.waking_n': 'Waking {n} agents…',
+    'monitor.agent.woke_n': '{n} wake commands sent, refreshing in 30s',
+    'monitor.agent.count.running': '{n} running',
+    'monitor.agent.count.idle': '{n} idle',
+    'monitor.agent.count.offline': '{n} offline',
+    'monitor.agent.count.unconfigured': '{n} unconfigured',
+    'monitor.dept.status.blocked': '⚠️ Blocked',
+    'monitor.dept.status.doing': '⚙️ In progress',
+    'monitor.dept.status.active': '🟢 Active',
+    'monitor.dept.status.idle': '⚪ On standby',
+    'monitor.dept.idle_placeholder': 'On standby',
+    'monitor.dept.model_unconfigured': 'Not configured',
 };
 
 export default en;

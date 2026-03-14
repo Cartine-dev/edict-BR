@@ -29,9 +29,9 @@ export default function MonitorPanel() {
   const handleWake = async (agentId: string) => {
     try {
       const r = await api.agentWake(agentId);
-      toast(r.message || '唤醒指令已发出');
+      toast(r.message || T('monitor.agent.wake_sent'));
       setTimeout(() => loadAgentsStatus(), 30000);
-    } catch { toast('唤醒失败', 'err'); }
+    } catch { toast(T('monitor.agent.wake_failed'), 'err'); }
   };
 
   const handleWakeAll = async () => {
@@ -39,12 +39,12 @@ export default function MonitorPanel() {
     const toWake = agentsStatusData.agents.filter(
       (a) => a.id !== 'main' && a.status !== 'running' && a.status !== 'unconfigured'
     );
-    if (!toWake.length) { toast('所有 Agent 均已在线'); return; }
-    toast(`正在唤醒 ${toWake.length} 个 Agent...`);
+    if (!toWake.length) { toast(T('monitor.agent.all_online')); return; }
+    toast(T('monitor.agent.waking_n', { n: toWake.length }));
     for (const a of toWake) {
       try { await api.agentWake(a.id); } catch { /* ignore */ }
     }
-    toast(`${toWake.length} 个唤醒指令已发出，30秒后刷新状态`);
+    toast(T('monitor.agent.woke_n', { n: toWake.length }));
     setTimeout(() => loadAgentsStatus(), 30000);
   };
 
@@ -64,14 +64,14 @@ export default function MonitorPanel() {
       {asData && asData.ok && (
         <div className="as-panel">
           <div className="as-header">
-            <span className="as-title">🔌 Agent 在线状态</span>
-            <span className={`as-gw ${gwCls}`}>Gateway: {gw?.status || '未知'}</span>
+            <span className="as-title">{T('monitor.agent_status.title')}</span>
+            <span className={`as-gw ${gwCls}`}>Gateway: {gw?.status || T('monitor.agent_status.gateway_unknown')}</span>
             <button className="btn-refresh" onClick={() => loadAgentsStatus()} style={{ marginLeft: 8 }}>
-              🔄 刷新
+              {T('common.refresh')}
             </button>
             {(offline + unconf > 0) && (
               <button className="btn-refresh" onClick={handleWakeAll} style={{ marginLeft: 4, borderColor: 'var(--warn)', color: 'var(--warn)' }}>
-                ⚡ 全部唤醒
+                {T('monitor.agent.wake_all')}
               </button>
             )}
           </div>
@@ -88,11 +88,11 @@ export default function MonitorPanel() {
                   {a.lastActive ? (
                     <div style={{ fontSize: 10, color: 'var(--muted)' }}>⏰ {a.lastActive}</div>
                   ) : (
-                    <div style={{ fontSize: 10, color: 'var(--muted)' }}>无活动记录</div>
+                    <div style={{ fontSize: 10, color: 'var(--muted)' }}>{T('monitor.agent.no_activity')}</div>
                   )}
                   {canWake && (
                     <button className="as-wake-btn" onClick={(e) => { e.stopPropagation(); handleWake(a.id); }}>
-                      ⚡ 唤醒
+                      {T('monitor.agent.wake')}
                     </button>
                   )}
                 </div>
@@ -100,12 +100,12 @@ export default function MonitorPanel() {
             })}
           </div>
           <div className="as-summary">
-            <span><span className="as-dot running" style={{ position: 'static', width: 8, height: 8 }} /> {running} 运行中</span>
-            <span><span className="as-dot idle" style={{ position: 'static', width: 8, height: 8 }} /> {idle} 待命</span>
-            {offline > 0 && <span><span className="as-dot offline" style={{ position: 'static', width: 8, height: 8 }} /> {offline} 离线</span>}
-            {unconf > 0 && <span><span className="as-dot unconfigured" style={{ position: 'static', width: 8, height: 8 }} /> {unconf} 未配置</span>}
+            <span><span className="as-dot running" style={{ position: 'static', width: 8, height: 8 }} /> {T('monitor.agent.count.running', { n: running })}</span>
+            <span><span className="as-dot idle" style={{ position: 'static', width: 8, height: 8 }} /> {T('monitor.agent.count.idle', { n: idle })}</span>
+            {offline > 0 && <span><span className="as-dot offline" style={{ position: 'static', width: 8, height: 8 }} /> {T('monitor.agent.count.offline', { n: offline })}</span>}
+            {unconf > 0 && <span><span className="as-dot unconfigured" style={{ position: 'static', width: 8, height: 8 }} /> {T('monitor.agent.count.unconfigured', { n: unconf })}</span>}
             <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--muted)' }}>
-              检测于 {(asData.checkedAt || '').substring(11, 19)}
+              {T('monitor.agent_status.checked_at', { time: (asData.checkedAt || '').substring(11, 19) })}
             </span>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function MonitorPanel() {
           const off = offMap[d.id];
           const hb = off?.heartbeat || { status: 'idle', label: '⚪' };
           const dotCls = isBlocked ? 'blocked' : isActive ? 'busy' : hb.status === 'active' ? 'active' : 'idle';
-          const statusText = isBlocked ? '⚠️ 阻塞' : isActive ? '⚙️ 执行中' : hb.status === 'active' ? '🟢 活跃' : '⚪ 候命';
+          const statusText = isBlocked ? T('monitor.dept.status.blocked') : isActive ? T('monitor.dept.status.doing') : hb.status === 'active' ? T('monitor.dept.status.active') : T('monitor.dept.status.idle');
           const cardCls = isBlocked ? 'blocked-card' : isActive ? 'active-card' : '';
 
           return (
@@ -141,13 +141,13 @@ export default function MonitorPanel() {
                   myTasks.map((t) => (
                     <div key={t.id} className="dc-task" onClick={() => setModalTaskId(t.id)}>
                       <div className="dc-task-id">{t.id}</div>
-                      <div className="dc-task-title">{t.title || '(无标题)'}</div>
+                      <div className="dc-task-title">{t.title || T('edict.no_title')}</div>
                       {t.now && t.now !== '-' && (
                         <div className="dc-task-now">{t.now.substring(0, 70)}</div>
                       )}
                       <div className="dc-task-meta">
                         <span className={`tag st-${t.state}`}>{stateLabel(t, T)}</span>
-                        {t.block && t.block !== '无' && (
+                        {t.block && t.block !== '无' && (  // '无' is a canonical data value, not UI
                           <span className="tag" style={{ borderColor: '#ff527044', color: 'var(--danger)' }}>🚫{t.block}</span>
                         )}
                       </div>
@@ -156,12 +156,12 @@ export default function MonitorPanel() {
                 ) : (
                   <div className="dc-idle">
                     <span style={{ fontSize: 20 }}>🪭</span>
-                    <span>候命中</span>
+                    <span>{T('monitor.dept.idle_placeholder')}</span>
                   </div>
                 )}
               </div>
               <div className="dc-footer">
-                <span className="dc-model">🤖 {off?.model_short || '待配置'}</span>
+                <span className="dc-model">🤖 {off?.model_short || T('monitor.dept.model_unconfigured')}</span>
                 {off?.last_active && <span className="dc-la">⏰ {off.last_active}</span>}
               </div>
             </div>
