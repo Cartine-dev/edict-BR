@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { useStore, isEdict, STATE_LABEL } from '../store';
+import { useStore, isEdict, stateLabel } from '../store';
 import type { Task, FlowEntry } from '../api';
+import { useT } from '../i18n/hooks';
 
 export default function MemorialPanel() {
   const liveStatus = useStore((s) => s.liveStatus);
   const [filter, setFilter] = useState('all');
   const [detailTask, setDetailTask] = useState<Task | null>(null);
   const toast = useStore((s) => s.toast);
+  const T = useT();
 
   const tasks = liveStatus?.tasks || [];
   let mems = tasks.filter((t) => isEdict(t) && ['Done', 'Cancelled'].includes(t.state));
@@ -109,6 +111,7 @@ function MemorialDetailModal({
   onClose: () => void;
   onExport: (t: Task) => void;
 }) {
+  const T = useT();
   const fl = t.flow_log || [];
   const st = t.state || 'Unknown';
   const stIcon = st === 'Done' ? '✅' : st === 'Cancelled' ? '🚫' : '🔄';
@@ -163,7 +166,7 @@ function MemorialDetailModal({
           <div style={{ fontSize: 11, color: 'var(--acc)', fontWeight: 700, letterSpacing: '.04em', marginBottom: 4 }}>{t.id}</div>
           <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>{stIcon} {t.title || t.id}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
-            <span className={`tag st-${st}`}>{STATE_LABEL[st] || st}</span>
+            <span className={`tag st-${st}`}>{stateLabel({ state: st } as Task, T)}</span>
             <span style={{ fontSize: 11, color: 'var(--muted)' }}>{t.org}</span>
             <span style={{ fontSize: 11, color: 'var(--muted)' }}>流转 {fl.length} 步</span>
             {depts.map((d) => (

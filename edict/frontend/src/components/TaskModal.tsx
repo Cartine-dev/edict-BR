@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useStore, getPipeStatus, deptColor, stateLabel, STATE_LABEL } from '../store';
+import { useStore, getPipeStatus, deptColor, stateLabel } from '../store';
+import { useT } from '../i18n/hooks';
 import { api } from '../api';
 import type {
   Task,
@@ -58,6 +59,7 @@ export default function TaskModal() {
   const liveStatus = useStore((s) => s.liveStatus);
   const loadAll = useStore((s) => s.loadAll);
   const toast = useStore((s) => s.toast);
+  const T = useT();
 
   const [activityData, setActivityData] = useState<TaskActivityData | null>(null);
   const [schedData, setSchedData] = useState<SchedulerStateData | null>(null);
@@ -327,7 +329,7 @@ export default function TaskModal() {
               <div className="m-row">
                 <div className="mr-label">状态</div>
                 <div className="mr-val">
-                  <span className={`tag st-${task.state}`}>{stateLabel(task)}</span>
+                  <span className={`tag st-${task.state}`}>{stateLabel(task, T)}</span>
                   {(task.review_round || 0) > 0 && <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 8 }}>共磋商 {task.review_round} 轮</span>}
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useStore, DEPTS, isEdict, stateLabel } from '../store';
 import { api, type OfficialInfo } from '../api';
+import { useT } from '../i18n/hooks';
 
 export default function MonitorPanel() {
   const liveStatus = useStore((s) => s.liveStatus);
@@ -9,6 +10,7 @@ export default function MonitorPanel() {
   const loadAgentsStatus = useStore((s) => s.loadAgentsStatus);
   const setModalTaskId = useStore((s) => s.setModalTaskId);
   const toast = useStore((s) => s.toast);
+  const T = useT();
 
   useEffect(() => {
     loadAgentsStatus();
@@ -144,7 +146,7 @@ export default function MonitorPanel() {
                         <div className="dc-task-now">{t.now.substring(0, 70)}</div>
                       )}
                       <div className="dc-task-meta">
-                        <span className={`tag st-${t.state}`}>{stateLabel(t)}</span>
+                        <span className={`tag st-${t.state}`}>{stateLabel(t, T)}</span>
                         {t.block && t.block !== '无' && (
                           <span className="tag" style={{ borderColor: '#ff527044', color: 'var(--danger)' }}>🚫{t.block}</span>
                         )}

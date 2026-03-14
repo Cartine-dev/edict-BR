@@ -1,6 +1,7 @@
-import { useStore, isEdict, STATE_LABEL, timeAgo } from '../store';
+import { useStore, isEdict, stateLabel, timeAgo } from '../store';
 import type { Task } from '../api';
 import { useState } from 'react';
+import { useT } from '../i18n/hooks';
 
 // Agent maps built from agentConfig
 function useAgentMaps() {
@@ -66,6 +67,7 @@ export default function SessionsPanel() {
   const setSessFilter = useStore((s) => s.setSessFilter);
   const { emojiMap, labelMap } = useAgentMaps();
   const [detailTask, setDetailTask] = useState<Task | null>(null);
+  const T = useT();
 
   const tasks = liveStatus?.tasks || [];
   const sessions = tasks.filter((t) => !isEdict(t));
@@ -131,7 +133,7 @@ export default function SessionsPanel() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span title={hb.label || ''}>{hbDot}</span>
-                    <span className={`tag st-${st}`} style={{ fontSize: 10 }}>{STATE_LABEL[st] || st}</span>
+                    <span className={`tag st-${st}`} style={{ fontSize: 10 }}>{stateLabel({ state: st } as Parameters<typeof stateLabel>[0], T)}</span>
                   </div>
                 </div>
                 <div className="sc-title">{title}</div>
@@ -142,7 +144,7 @@ export default function SessionsPanel() {
                 )}
                 <div className="sc-meta">
                   {totalTk ? <span style={{ fontSize: 10, color: 'var(--muted)' }}>🪙 {totalTk.toLocaleString()} tokens</span> : null}
-                  {updatedAt ? <span className="sc-time">{timeAgo(updatedAt)}</span> : null}
+                  {updatedAt ? <span className="sc-time">{timeAgo(updatedAt, T)}</span> : null}
                 </div>
               </div>
             );
@@ -169,6 +171,7 @@ function SessionDetailModal({
   emojiMap: Record<string, string>;
   onClose: () => void;
 }) {
+  const T = useT();
   const agent = extractAgent(t);
   const emoji = emojiMap[agent] || '🏛️';
   const title = humanTitle(t, labelMap);
@@ -190,7 +193,7 @@ function SessionDetailModal({
           <div style={{ fontSize: 11, color: 'var(--acc)', fontWeight: 700, letterSpacing: '.04em', marginBottom: 4 }}>{t.id}</div>
           <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>{emoji} {title}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
-            <span className={`tag st-${st}`}>{STATE_LABEL[st] || st}</span>
+            <span className={`tag st-${st}`}>{stateLabel({ state: st } as Parameters<typeof stateLabel>[0], T)}</span>
             <span style={{ fontSize: 11, color: 'var(--muted)' }}>{ch.icon} {ch.text}</span>
             {hb.label && <span style={{ fontSize: 11 }}>{hb.label}</span>}
           </div>

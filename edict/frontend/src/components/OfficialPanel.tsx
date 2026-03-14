@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useStore, STATE_LABEL } from '../store';
+import { useStore, stateLabel } from '../store';
+import { useT } from '../i18n/hooks';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -114,6 +115,7 @@ function OfficialDetail({
   maxTk: number;
   onOpenTask: (id: string) => void;
 }) {
+  const T = useT();
   const hb = o.heartbeat || { status: 'idle', label: '⚪ 待命' };
   const totTk = o.tokens_in + o.tokens_out + o.cache_read + o.cache_write;
   const edicts = o.participated_edicts || [];
@@ -210,7 +212,7 @@ function OfficialDetail({
               >
                 <span style={{ fontSize: 10, color: 'var(--acc)', fontWeight: 700 }}>{e.id}</span>
                 <span style={{ flex: 1, fontSize: 12 }}>{e.title.substring(0, 35)}</span>
-                <span className={`tag st-${e.state}`} style={{ fontSize: 10 }}>{STATE_LABEL[e.state] || e.state}</span>
+                <span className={`tag st-${e.state}`} style={{ fontSize: 10 }}>{stateLabel({ state: e.state } as Parameters<typeof stateLabel>[0], T)}</span>
               </div>
             ))}
           </div>
