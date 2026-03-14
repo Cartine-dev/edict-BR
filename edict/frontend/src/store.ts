@@ -4,6 +4,7 @@
  */
 
 import { create } from 'zustand';
+import type { Lang } from './i18n/types';
 import {
   api,
   type Task,
@@ -19,14 +20,14 @@ import {
 // ── Pipeline Definition (PIPE) ──
 
 export const PIPE = [
-  { key: 'Inbox',    dept: '皇上',   icon: '👑', action: '下旨' },
-  { key: 'Taizi',    dept: '太子',   icon: '🤴', action: '分拣' },
+  { key: 'Inbox', dept: '皇上', icon: '👑', action: '下旨' },
+  { key: 'Taizi', dept: '太子', icon: '🤴', action: '分拣' },
   { key: 'Zhongshu', dept: '中书省', icon: '📜', action: '起草' },
-  { key: 'Menxia',   dept: '门下省', icon: '🔍', action: '审议' },
+  { key: 'Menxia', dept: '门下省', icon: '🔍', action: '审议' },
   { key: 'Assigned', dept: '尚书省', icon: '📮', action: '派发' },
-  { key: 'Doing',    dept: '六部',   icon: '⚙️', action: '执行' },
-  { key: 'Review',   dept: '尚书省', icon: '🔎', action: '汇总' },
-  { key: 'Done',     dept: '回奏',   icon: '✅', action: '完成' },
+  { key: 'Doing', dept: '六部', icon: '⚙️', action: '执行' },
+  { key: 'Review', dept: '尚书省', icon: '🔎', action: '汇总' },
+  { key: 'Done', dept: '回奏', icon: '✅', action: '完成' },
 ] as const;
 
 export const PIPE_STATE_IDX: Record<string, number> = {
@@ -86,31 +87,31 @@ export type TabKey =
   | 'skills' | 'sessions' | 'memorials' | 'templates' | 'morning';
 
 export const TAB_DEFS: { key: TabKey; label: string; icon: string }[] = [
-  { key: 'edicts',    label: '旨意看板', icon: '📜' },
-  { key: 'monitor',   label: '省部调度', icon: '🏛️' },
+  { key: 'edicts', label: '旨意看板', icon: '📜' },
+  { key: 'monitor', label: '省部调度', icon: '🏛️' },
   { key: 'officials', label: '官员总览', icon: '👔' },
-  { key: 'models',    label: '模型配置', icon: '🤖' },
-  { key: 'skills',    label: '技能配置', icon: '🎯' },
-  { key: 'sessions',  label: '小任务',   icon: '💬' },
-  { key: 'memorials', label: '奏折阁',   icon: '📜' },
-  { key: 'templates', label: '旨库',     icon: '📋' },
-  { key: 'morning',   label: '天下要闻', icon: '🌅' },
+  { key: 'models', label: '模型配置', icon: '🤖' },
+  { key: 'skills', label: '技能配置', icon: '🎯' },
+  { key: 'sessions', label: '小任务', icon: '💬' },
+  { key: 'memorials', label: '奏折阁', icon: '📜' },
+  { key: 'templates', label: '旨库', icon: '📋' },
+  { key: 'morning', label: '天下要闻', icon: '🌅' },
 ];
 
 // ── DEPTS for monitor ──
 
 export const DEPTS = [
-  { id: 'taizi',    label: '太子',   emoji: '🤴', role: '太子',     rank: '储君' },
-  { id: 'zhongshu', label: '中书省', emoji: '📜', role: '中书令',   rank: '正一品' },
-  { id: 'menxia',   label: '门下省', emoji: '🔍', role: '侍中',     rank: '正一品' },
-  { id: 'shangshu', label: '尚书省', emoji: '📮', role: '尚书令',   rank: '正一品' },
-  { id: 'libu',     label: '礼部',   emoji: '📝', role: '礼部尚书', rank: '正二品' },
-  { id: 'hubu',     label: '户部',   emoji: '💰', role: '户部尚书', rank: '正二品' },
-  { id: 'bingbu',   label: '兵部',   emoji: '⚔️', role: '兵部尚书', rank: '正二品' },
-  { id: 'xingbu',   label: '刑部',   emoji: '⚖️', role: '刑部尚书', rank: '正二品' },
-  { id: 'gongbu',   label: '工部',   emoji: '🔧', role: '工部尚书', rank: '正二品' },
-  { id: 'libu_hr',  label: '吏部',   emoji: '👔', role: '吏部尚书', rank: '正二品' },
-  { id: 'zaochao',  label: '钦天监', emoji: '🌟', role: '朝报官',   rank: '正三品' },
+  { id: 'taizi', label: '太子', emoji: '🤴', role: '太子', rank: '储君' },
+  { id: 'zhongshu', label: '中书省', emoji: '📜', role: '中书令', rank: '正一品' },
+  { id: 'menxia', label: '门下省', emoji: '🔍', role: '侍中', rank: '正一品' },
+  { id: 'shangshu', label: '尚书省', emoji: '📮', role: '尚书令', rank: '正一品' },
+  { id: 'libu', label: '礼部', emoji: '📝', role: '礼部尚书', rank: '正二品' },
+  { id: 'hubu', label: '户部', emoji: '💰', role: '户部尚书', rank: '正二品' },
+  { id: 'bingbu', label: '兵部', emoji: '⚔️', role: '兵部尚书', rank: '正二品' },
+  { id: 'xingbu', label: '刑部', emoji: '⚖️', role: '刑部尚书', rank: '正二品' },
+  { id: 'gongbu', label: '工部', emoji: '🔧', role: '工部尚书', rank: '正二品' },
+  { id: 'libu_hr', label: '吏部', emoji: '👔', role: '吏部尚书', rank: '正二品' },
+  { id: 'zaochao', label: '钦天监', emoji: '🌟', role: '朝报官', rank: '正三品' },
 ];
 
 // ── Templates ──
@@ -266,6 +267,7 @@ interface AppStore {
   selectedOfficial: string | null;
   modalTaskId: string | null;
   countdown: number;
+  language: Lang;
 
   // Toast
   toasts: { id: number; msg: string; type: 'ok' | 'err' }[];
@@ -278,6 +280,7 @@ interface AppStore {
   setSelectedOfficial: (id: string | null) => void;
   setModalTaskId: (id: string | null) => void;
   setCountdown: (n: number) => void;
+  setLanguage: (lang: Lang) => void;
   toast: (msg: string, type?: 'ok' | 'err') => void;
 
   // Data fetching
@@ -291,6 +294,14 @@ interface AppStore {
 }
 
 let _toastId = 0;
+
+// ── Language helpers ─────────────────────────────────────────────────────
+
+function detectInitialLang(): Lang {
+  const stored = localStorage.getItem('edict.lang') as Lang | null;
+  if (stored === 'zh' || stored === 'en') return stored;
+  return navigator.language.startsWith('en') ? 'en' : 'zh';
+}
 
 export const useStore = create<AppStore>((set, get) => ({
   liveStatus: null,
@@ -308,8 +319,14 @@ export const useStore = create<AppStore>((set, get) => ({
   selectedOfficial: null,
   modalTaskId: null,
   countdown: 5,
+  language: detectInitialLang(),
 
   toasts: [],
+
+  setLanguage: (lang) => {
+    localStorage.setItem('edict.lang', lang);
+    set({ language: lang });
+  },
 
   setActiveTab: (tab) => {
     set({ activeTab: tab });
@@ -341,7 +358,7 @@ export const useStore = create<AppStore>((set, get) => ({
       // Also preload officials for monitor tab
       const s = get();
       if (!s.officialsData) {
-        api.officialsStats().then((d) => set({ officialsData: d })).catch(() => {});
+        api.officialsStats().then((d) => set({ officialsData: d })).catch(() => { });
       }
     } catch {
       // silently fail

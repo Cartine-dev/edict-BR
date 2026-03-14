@@ -1,5 +1,19 @@
-import { useStore, isEdict, isArchived, getPipeStatus, stateLabel, deptColor, PIPE } from '../store';
+import { useStore, isEdict, isArchived, getPipeStatus, deptColor, PIPE } from '../store';
 import { api, type Task } from '../api';
+import { useT } from '../i18n/hooks';
+import { t } from '../i18n';
+import type { Lang } from '../i18n';
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/** stateLabel uses i18n for UI state labels; does NOT touch content from data/*.json */
+export function stateLabelI18n(task: Task, lang: Lang): string {
+  const r = task.review_round || 0;
+  if (task.state === 'Menxia' && r > 1) return t(lang, 'state.Menxia.round', { r });
+  if (task.state === 'Zhongshu' && r > 0) return t(lang, 'state.Zhongshu.round', { r });
+  const key = `state.${task.state}` as Parameters<typeof t>[1];
+  return t(lang, key) || task.state;
+}
 
 // 排序权重
 const STATE_ORDER: Record<string, number> = {
@@ -28,6 +42,8 @@ function EdictCard({ task }: { task: Task }) {
   const setModalTaskId = useStore((s) => s.setModalTaskId);
   const toast = useStore((s) => s.toast);
   const loadAll = useStore((s) => s.loadAll);
+  const lang = useStore((s) => s.language) as Lang;
+  const T = useT();
 
   const hb = task.heartbeat || { status: 'unknown', label: '⚪' };
   const stCls = 'st-' + (task.state || '');
@@ -44,20 +60,19 @@ function EdictCard({ task }: { task: Task }) {
   const handleAction = async (action: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (action === 'stop' || action === 'cancel') {
-      // Use confirm dialog via store (will implement with ConfirmDialog)
-      const reason = prompt(action === 'stop' ? '请输入叫停原因：' : '请输入取消原因：');
+      const reason = prompt(action === 'stop' ? T('edict.stop.prompt') : T('edict.cancel.prompt'));
       if (reason === null) return;
       try {
         const r = await api.taskAction(task.id, action, reason);
-        if (r.ok) { toast(r.message || '操作成功'); loadAll(); }
-        else toast(r.error || '操作失败', 'err');
-      } catch { toast('服务器连接失败', 'err'); }
+        if (r.ok) { toast(r.message || T('common.op_success')); loadAll(); }
+        else toast(r.error || T('common.op_failed'), 'err');
+      } catch { toast(T('common.server_error'), 'err'); }
     } else if (action === 'resume') {
       try {
         const r = await api.taskAction(task.id, 'resume', '恢复执行');
-        if (r.ok) { toast(r.message || '已恢复'); loadAll(); }
-        else toast(r.error || '操作失败', 'err');
-      } catch { toast('服务器连接失败', 'err'); }
+        if (r.ok) { toast(r.message || T('edict.resume.done')); loadAll(); }
+        else toast(r.error || T('common.op_failed'), 'err');
+      } catch { toast(T('common.server_error'), 'err'); }
     }
   };
 
@@ -65,9 +80,9 @@ function EdictCard({ task }: { task: Task }) {
     e.stopPropagation();
     try {
       const r = await api.archiveTask(task.id, !task.archived);
-      if (r.ok) { toast(r.message || '操作成功'); loadAll(); }
-      else toast(r.error || '操作失败', 'err');
-    } catch { toast('服务器连接失败', 'err'); }
+      if (r.ok) { toast(r.message || T('common.op_success')); loadAll(); }
+      else toast(r.error || T('common.op_failed'), 'err');
+    } catch { toast(T('common.server_error'), 'err'); }
   };
 
   return (
@@ -77,13 +92,15 @@ function EdictCard({ task }: { task: Task }) {
     >
       <MiniPipe task={task} />
       <div className="ec-id">{task.id}</div>
-      <div className="ec-title">{task.title || '(无标题)'}</div>
+      {/* task.title is data content from JSON — not translated */}
+      <div className="ec-title">{task.title || T('edict.no_title')}</div>
       <div className="ec-meta">
-        <span className={`tag ${stCls}`}>{stateLabel(task)}</span>
+        <span className={`tag ${stCls}`}>{stateLabelI18n(task, lang)}</span>
+        {/* task.org is data content — not translated */}
         {task.org && <span className={`tag ${deptCls}`}>{task.org}</span>}
         {curStage && (
           <span style={{ fontSize: 11, color: 'var(--muted)' }}>
-            当前: <b style={{ color: deptColor(curStage.dept) }}>{curStage.dept} · {curStage.action}</b>
+            {T('edict.current')} <b style={{ color: deptColor(curStage.dept) }}>{curStage.dept} · {curStage.action}</b>
           </span>
         )}
       </div>
@@ -108,7 +125,7 @@ function EdictCard({ task }: { task: Task }) {
               {i + 1}
             </span>
           ))}
-          <span style={{ color: 'var(--muted)', fontSize: 10 }}>第 {task.review_round} 轮磋商</span>
+          <span style={{ color: 'var(--muted)', fontSize: 10 }}>{T('edict.round', { r: task.review_round || 0 })}</span>
         </div>
       )}
       {todoTotal > 0 && (
@@ -117,11 +134,12 @@ function EdictCard({ task }: { task: Task }) {
           <div className="ec-todo-track">
             <div className="ec-todo-fill" style={{ width: `${Math.round((todoDone / todoTotal) * 100)}%` }} />
           </div>
-          <span>{todoDone === todoTotal ? '✅ 全部完成' : '🔄 进行中'}</span>
+          <span>{todoDone === todoTotal ? T('edict.todos.done') : T('edict.todos.progress')}</span>
         </div>
       )}
       <div className="ec-footer">
         <span className={`hb ${hb.status}`}>{hb.label}</span>
+        {/* task.block is data content — not translated */}
         {isBlocked && (
           <span className="tag" style={{ borderColor: '#ff527044', color: 'var(--danger)', background: '#200a10' }}>
             🚫 {task.block}
@@ -134,18 +152,18 @@ function EdictCard({ task }: { task: Task }) {
       <div className="ec-actions" onClick={(e) => e.stopPropagation()}>
         {canStop && (
           <>
-            <button className="mini-act" onClick={(e) => handleAction('stop', e)}>⏸ 叫停</button>
-            <button className="mini-act danger" onClick={(e) => handleAction('cancel', e)}>🚫 取消</button>
+            <button className="mini-act" onClick={(e) => handleAction('stop', e)}>{T('edict.stop')}</button>
+            <button className="mini-act danger" onClick={(e) => handleAction('cancel', e)}>{T('edict.cancel')}</button>
           </>
         )}
         {canResume && (
-          <button className="mini-act" onClick={(e) => handleAction('resume', e)}>▶ 恢复</button>
+          <button className="mini-act" onClick={(e) => handleAction('resume', e)}>{T('edict.resume')}</button>
         )}
         {archived && !task.archived && (
-          <button className="mini-act" onClick={handleArchive}>📦 归档</button>
+          <button className="mini-act" onClick={handleArchive}>{T('edict.archive')}</button>
         )}
         {task.archived && (
-          <button className="mini-act" onClick={handleArchive}>📤 取消归档</button>
+          <button className="mini-act" onClick={handleArchive}>{T('edict.unarchive')}</button>
         )}
       </div>
     </div>
@@ -158,6 +176,7 @@ export default function EdictBoard() {
   const setEdictFilter = useStore((s) => s.setEdictFilter);
   const toast = useStore((s) => s.toast);
   const loadAll = useStore((s) => s.loadAll);
+  const T = useT();
 
   const tasks = liveStatus?.tasks || [];
   const allEdicts = tasks.filter(isEdict);
@@ -174,53 +193,60 @@ export default function EdictBoard() {
   const unArchivedDone = allEdicts.filter((t) => !t.archived && ['Done', 'Cancelled'].includes(t.state));
 
   const handleArchiveAll = async () => {
-    if (!confirm('将所有已完成/已取消的旨意移入归档？')) return;
+    if (!confirm(T('edict.archive_all.confirm'))) return;
     try {
       const r = await api.archiveAllDone();
-      if (r.ok) { toast(`📦 ${r.count || 0} 道旨意已归档`); loadAll(); }
-      else toast(r.error || '批量归档失败', 'err');
-    } catch { toast('服务器连接失败', 'err'); }
+      if (r.ok) { toast(T('edict.archive_all.done', { n: r.count || 0 })); loadAll(); }
+      else toast(r.error || T('edict.archive_all.err'), 'err');
+    } catch { toast(T('common.server_error'), 'err'); }
   };
 
   const handleScan = async () => {
     try {
       const r = await api.schedulerScan();
-      if (r.ok) toast(`🧭 太子巡检完成：${r.count || 0} 个动作`);
-      else toast(r.error || '巡检失败', 'err');
+      if (r.ok) toast(T('edict.scan.done', { n: r.count || 0 }));
+      else toast(r.error || T('edict.scan.err'), 'err');
       loadAll();
-    } catch { toast('服务器连接失败', 'err'); }
+    } catch { toast(T('common.server_error'), 'err'); }
   };
 
   return (
     <div>
       {/* Archive Bar */}
       <div className="archive-bar">
-        <span className="ab-label">筛选:</span>
-        {(['active', 'archived', 'all'] as const).map((f) => (
-          <button
-            key={f}
-            className={`ab-btn ${edictFilter === f ? 'active' : ''}`}
-            onClick={() => setEdictFilter(f)}
-          >
-            {f === 'active' ? '活跃' : f === 'archived' ? '归档' : '全部'}
-          </button>
-        ))}
+        <span className="ab-label">{T('edict.filter.label')}</span>
+        {(['active', 'archived', 'all'] as const).map((f) => {
+          const filterLabel: Record<typeof f, Parameters<typeof T>[0]> = {
+            active: 'edict.filter.active',
+            archived: 'edict.filter.archived',
+            all: 'edict.filter.all',
+          };
+          return (
+            <button
+              key={f}
+              className={`ab-btn ${edictFilter === f ? 'active' : ''}`}
+              onClick={() => setEdictFilter(f)}
+            >
+              {T(filterLabel[f])}
+            </button>
+          );
+        })}
         {unArchivedDone.length > 0 && (
-          <button className="ab-btn" onClick={handleArchiveAll}>📦 一键归档</button>
+          <button className="ab-btn" onClick={handleArchiveAll}>{T('edict.archive_all')}</button>
         )}
         <span className="ab-count">
-          活跃 {activeEdicts.length} · 归档 {archivedEdicts.length} · 共 {allEdicts.length}
+          {T('edict.count', { active: activeEdicts.length, archived: archivedEdicts.length, total: allEdicts.length })}
         </span>
-        <button className="ab-scan" onClick={handleScan}>🧭 太子巡检</button>
+        <button className="ab-scan" onClick={handleScan}>{T('edict.scan')}</button>
       </div>
 
       {/* Grid */}
       <div className="edict-grid">
         {edicts.length === 0 ? (
           <div className="empty" style={{ gridColumn: '1/-1' }}>
-            暂无旨意<br />
+            {T('edict.empty')}<br />
             <small style={{ fontSize: 11, marginTop: 6, display: 'block', color: 'var(--muted)' }}>
-              通过飞书向太子发送任务，太子分拣后转中书省处理
+              {T('edict.empty.hint')}
             </small>
           </div>
         ) : (

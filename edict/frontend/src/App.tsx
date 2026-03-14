@@ -13,6 +13,7 @@ import TaskModal from './components/TaskModal';
 // ConfirmDialog is used inside TaskModal as needed
 import Toaster from './components/Toaster';
 import CourtCeremony from './components/CourtCeremony';
+import { useT } from './i18n/hooks';
 
 export default function App() {
   const activeTab = useStore((s) => s.activeTab);
@@ -20,6 +21,9 @@ export default function App() {
   const liveStatus = useStore((s) => s.liveStatus);
   const countdown = useStore((s) => s.countdown);
   const loadAll = useStore((s) => s.loadAll);
+  const language = useStore((s) => s.language);
+  const setLanguage = useStore((s) => s.setLanguage);
+  const T = useT();
 
   useEffect(() => {
     startPolling();
@@ -40,28 +44,43 @@ export default function App() {
     if (key === 'memorials') return String(edicts.filter((t) => ['Done', 'Cancelled'].includes(t.state)).length);
     if (key === 'monitor') {
       const activeDepts = tasks.filter((t) => isEdict(t) && t.state === 'Doing').length;
-      return activeDepts + '活跃';
+      return T('tabs.monitor.badge', { n: activeDepts });
     }
     return '';
   };
+
+  const syncLabel = syncOk
+    ? T('app.sync.ok')
+    : syncOk === false
+      ? T('app.sync.err')
+      : T('app.sync.pending');
 
   return (
     <div className="wrap">
       {/* ── Header ── */}
       <div className="hdr">
         <div>
-          <div className="logo">三省六部 · 总控台</div>
-          <div className="sub-text">OpenClaw Sansheng-Liubu Dashboard</div>
+          <div className="logo">{T('app.title')}</div>
+          <div className="sub-text">{T('app.subtitle')}</div>
         </div>
         <div className="hdr-r">
           <span className={`chip ${syncOk ? 'ok' : syncOk === false ? 'err' : ''}`}>
-            {syncOk ? '✅ 同步正常' : syncOk === false ? '❌ 服务器未启动' : '⏳ 连接中…'}
+            {syncLabel}
           </span>
-          <span className="chip">{activeEdicts.length} 道旨意</span>
+          <span className="chip">{T('app.edicts_count', { n: activeEdicts.length })}</span>
           <button className="btn-refresh" onClick={() => loadAll()}>
-            ⟳ 刷新
+            {T('common.refresh')}
           </button>
           <span style={{ fontSize: 11, color: 'var(--muted)' }}>⟳ {countdown}s</span>
+          {/* Language toggle */}
+          <button
+            id="lang-toggle"
+            className="lang-toggle"
+            onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+            title={language === 'zh' ? 'Switch to English' : '切换到中文'}
+          >
+            {T('app.lang_toggle')}
+          </button>
         </div>
       </div>
 
