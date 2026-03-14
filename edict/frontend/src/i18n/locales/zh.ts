@@ -410,6 +410,47 @@ const zh = {
     'skills.field.trigger_placeholder': '何时激活此技能',
     'skills.field.target_agent': '目标 Agent',
     'skills.field.source_url': '源 URL',
+
+    // ── Morning Brief panel ───────────────────────────────────────────────────
+    'morning.title': '🌅 天下要闻',
+    'morning.date_format': '$1年$2月$3日',
+
+    // labels
+    'morning.label.collected_at': '采集于 {time}',
+    'morning.label.total_news': '共 {n} 条要闻',
+    'morning.label.item_count': '{n} 条',
+    'morning.label.watched': '⭐ 关注',
+
+    // section headers
+    'morning.section.categories': '订阅分类',
+    'morning.section.keywords': '关注关键词',
+    'morning.section.custom_feeds': '自定义信息源',
+    'morning.section.webhook': '飞书 Webhook',
+
+    // buttons
+    'morning.button.config': '⚙ 订阅配置',
+    'morning.button.refresh': '⟳ 立即采集',
+    'morning.button.collecting': '⟳ 采集中…',
+    'morning.button.collecting_s': '⟳ 采集中… ({s}s)',
+    'morning.button.add': '添加',
+    'morning.button.save_config': '💾 保存配置',
+
+    // empty states
+    'morning.empty.hint': '暂无数据，点击右上角「立即采集」获取今日简报',
+    'morning.empty.no_news': '暂无新闻',
+
+    // form fields
+    'morning.field.keyword_placeholder': '输入关键词',
+    'morning.field.feed_name_placeholder': '源名称',
+
+    // toast messages
+    'morning.toast.triggered': '采集已触发，自动检测更新中…',
+    'morning.toast.timeout': '采集超时，请重试',
+    'morning.toast.updated': '✅ 天下要闻已更新',
+    'morning.toast.trigger_fail': '触发失败',
+    'morning.toast.feed_required': '请填写源名称和URL',
+    'morning.toast.config_saved': '订阅配置已保存',
+    'morning.toast.save_fail': '保存失败',
 } as const;
 
 export default zh;

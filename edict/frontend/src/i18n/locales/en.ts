@@ -408,6 +408,47 @@ const en: Record<TranslationKey, string> = {
     'skills.field.trigger_placeholder': 'When should this skill activate?',
     'skills.field.target_agent': 'Target Agent',
     'skills.field.source_url': 'Source URL',
+
+    // ── Morning Brief panel ───────────────────────────────────────────────────
+    'morning.title': '🌅 Morning Brief',
+    'morning.date_format': '$1-$2-$3',
+
+    // labels
+    'morning.label.collected_at': 'Collected at {time}',
+    'morning.label.total_news': '{n} items',
+    'morning.label.item_count': '{n} items',
+    'morning.label.watched': '⭐ Watching',
+
+    // section headers
+    'morning.section.categories': 'Categories',
+    'morning.section.keywords': 'Watched Keywords',
+    'morning.section.custom_feeds': 'Custom Feeds',
+    'morning.section.webhook': 'Feishu Webhook',
+
+    // buttons
+    'morning.button.config': '⚙ Subscription Config',
+    'morning.button.refresh': '⟳ Collect Now',
+    'morning.button.collecting': '⟳ Collecting…',
+    'morning.button.collecting_s': '⟳ Collecting… ({s}s)',
+    'morning.button.add': 'Add',
+    'morning.button.save_config': '💾 Save Config',
+
+    // empty states
+    'morning.empty.hint': 'No data yet — click “Collect Now” to fetch today’s brief',
+    'morning.empty.no_news': 'No news',
+
+    // form fields
+    'morning.field.keyword_placeholder': 'Enter keyword',
+    'morning.field.feed_name_placeholder': 'Feed name',
+
+    // toast messages
+    'morning.toast.triggered': 'Collection triggered, polling for updates…',
+    'morning.toast.timeout': 'Collection timed out, please retry',
+    'morning.toast.updated': '✅ Morning Brief updated',
+    'morning.toast.trigger_fail': 'Trigger failed',
+    'morning.toast.feed_required': 'Please fill in feed name and URL',
+    'morning.toast.config_saved': 'Subscription config saved',
+    'morning.toast.save_fail': 'Save failed',
 };
 
 export default en;
