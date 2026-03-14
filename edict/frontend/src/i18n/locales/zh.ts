@@ -327,6 +327,89 @@ const zh = {
     'sessions.activity.kind.tool': '工具',
     'sessions.activity.kind.user': '用户',
     'sessions.activity.kind.event': '事件',
+
+    // ── Skills Config panel ───────────────────────────────────────────────────
+    'skills.error.no_load': '无法加载',
+    'skills.loading': '⟳ 加载中…',
+
+    // tabs
+    'skills.tab.local': '🏛️ 本地技能',
+    'skills.tab.remote': '🌐 远程技能',
+
+    // labels
+    'skills.label.skill_count': '{n} 技能',
+    'skills.label.no_desc': '无描述',
+    'skills.label.remote_count': '共 {n} 个远程技能',
+    'skills.label.target_agent': '目标 Agent：',
+    'skills.label.select_agent': '— 选择 Agent —',
+
+    // section headers
+    'skills.section.community': '🌐 社区技能源 — 一键导入',
+
+    // status badges
+    'skills.status.valid': '✓ 有效',
+    'skills.status.missing': '✗ 文件丢失',
+    'skills.status.imported': '✓ 已导入',
+
+    // buttons
+    'skills.button.add_local': '＋ 添加技能',
+    'skills.button.add_remote': '＋ 添加远程 Skill',
+    'skills.button.refresh': '⟳ 刷新列表',
+    'skills.button.import': '导入',
+    'skills.button.view': '查看',
+    'skills.button.update': '更新',
+    'skills.button.delete': '删除',
+    'skills.button.create': '📦 创建技能',
+    'skills.button.creating': '⟳ 创建中…',
+    'skills.button.add_remote_confirm': '🌐 添加远程技能',
+    'skills.button.downloading': '⟳ 下载中…',
+
+    // empty states
+    'skills.empty.local': '暂无 Skills',
+    'skills.empty.remote': '尚无远程技能',
+    'skills.empty.remote_hint': '从社区技能源快速导入，或手动添加 URL',
+
+    // content modal
+    'skills.content.err_read': '无法读取',
+
+    // toast messages
+    'skills.toast.added': '✅ 技能 {name} 已添加到 {agent}',
+    'skills.toast.add_fail': '添加失败',
+    'skills.toast.remote_added': '✅ 远程技能 {name} 已添加到 {agent}',
+    'skills.toast.updated': '✅ 技能 {name} 已更新',
+    'skills.toast.update_fail': '更新失败',
+    'skills.toast.removed': '🗑️ 技能 {name} 已移除',
+    'skills.toast.remove_fail': '移除失败',
+    'skills.toast.no_agent': '请先选择目标 Agent',
+    'skills.toast.import_fail': '导入失败',
+    'skills.toast.remote_load_fail': '远程技能列表加载失败',
+
+    // local skill modal
+    'skills.modal.add_title': '为 {agent} 添加技能',
+    'skills.modal.add_heading': '＋ 新增 Skill',
+    'skills.modal.spec_title': '📋 Skill 规范说明',
+    'skills.modal.spec_line1': '技能名称使用{fmt}',
+    'skills.modal.spec_fmt': '小写英文 + 连字符',
+    'skills.modal.spec_line2': '创建后会生成模板文件 SKILL.md',
+    'skills.modal.spec_line3': '技能会在 agent 收到相关任务时{auto}',
+    'skills.modal.spec_auto': '自动激活',
+
+    // remote skill modal
+    'skills.modal.remote_mgmt': '远程技能管理',
+    'skills.modal.remote_heading': '🌐 添加远程 Skill',
+    'skills.modal.remote_hint': '支持 GitHub Raw URL，如：',
+
+    // form fields
+    'skills.field.name': '技能名称',
+    'skills.field.name_placeholder': '如 data-analysis, code-review',
+    'skills.field.name_placeholder_remote': '如 brainstorming, code-review',
+    'skills.field.desc': '技能描述',
+    'skills.field.desc_placeholder': '一句话说明用途',
+    'skills.field.desc_optional': '描述（可选）',
+    'skills.field.trigger': '触发条件（可选）',
+    'skills.field.trigger_placeholder': '何时激活此技能',
+    'skills.field.target_agent': '目标 Agent',
+    'skills.field.source_url': '源 URL',
 } as const;
 
 export default zh;

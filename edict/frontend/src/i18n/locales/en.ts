@@ -325,6 +325,89 @@ const en: Record<TranslationKey, string> = {
     'sessions.activity.kind.tool': 'Tool',
     'sessions.activity.kind.user': 'User',
     'sessions.activity.kind.event': 'Event',
+
+    // ── Skills Config panel ───────────────────────────────────────────────────
+    'skills.error.no_load': 'Unable to load',
+    'skills.loading': '⟳ Loading…',
+
+    // tabs
+    'skills.tab.local': '🏛️ Local Skills',
+    'skills.tab.remote': '🌐 Remote Skills',
+
+    // labels
+    'skills.label.skill_count': '{n} skills',
+    'skills.label.no_desc': 'No description',
+    'skills.label.remote_count': '{n} remote skills total',
+    'skills.label.target_agent': 'Target Agent:',
+    'skills.label.select_agent': '— Select Agent —',
+
+    // section headers
+    'skills.section.community': '🌐 Community Sources — One-click Import',
+
+    // status badges
+    'skills.status.valid': '✓ Valid',
+    'skills.status.missing': '✗ File missing',
+    'skills.status.imported': '✓ Imported',
+
+    // buttons
+    'skills.button.add_local': '＋ Add Skill',
+    'skills.button.add_remote': '＋ Add Remote Skill',
+    'skills.button.refresh': '⟳ Refresh List',
+    'skills.button.import': 'Import',
+    'skills.button.view': 'View',
+    'skills.button.update': 'Update',
+    'skills.button.delete': 'Delete',
+    'skills.button.create': '📦 Create Skill',
+    'skills.button.creating': '⟳ Creating…',
+    'skills.button.add_remote_confirm': '🌐 Add Remote Skill',
+    'skills.button.downloading': '⟳ Downloading…',
+
+    // empty states
+    'skills.empty.local': 'No skills yet',
+    'skills.empty.remote': 'No remote skills yet',
+    'skills.empty.remote_hint': 'Import from community sources or add a URL manually',
+
+    // content modal
+    'skills.content.err_read': 'Unable to read',
+
+    // toast messages
+    'skills.toast.added': '✅ Skill {name} added to {agent}',
+    'skills.toast.add_fail': 'Add failed',
+    'skills.toast.remote_added': '✅ Remote skill {name} added to {agent}',
+    'skills.toast.updated': '✅ Skill {name} updated',
+    'skills.toast.update_fail': 'Update failed',
+    'skills.toast.removed': '🗑️ Skill {name} removed',
+    'skills.toast.remove_fail': 'Remove failed',
+    'skills.toast.no_agent': 'Please select a target Agent first',
+    'skills.toast.import_fail': 'Import failed',
+    'skills.toast.remote_load_fail': 'Failed to load remote skills list',
+
+    // local skill modal
+    'skills.modal.add_title': 'Add Skill to {agent}',
+    'skills.modal.add_heading': '＋ New Skill',
+    'skills.modal.spec_title': '📋 Skill Spec',
+    'skills.modal.spec_line1': 'Skill name must use {fmt}',
+    'skills.modal.spec_fmt': 'lowercase letters + hyphens',
+    'skills.modal.spec_line2': 'A SKILL.md template file will be created',
+    'skills.modal.spec_line3': 'Skill will be {auto} when the agent receives a relevant task',
+    'skills.modal.spec_auto': 'auto-activated',
+
+    // remote skill modal
+    'skills.modal.remote_mgmt': 'Remote Skill Manager',
+    'skills.modal.remote_heading': '🌐 Add Remote Skill',
+    'skills.modal.remote_hint': 'Supports GitHub Raw URL, e.g.:',
+
+    // form fields
+    'skills.field.name': 'Skill Name',
+    'skills.field.name_placeholder': 'e.g. data-analysis, code-review',
+    'skills.field.name_placeholder_remote': 'e.g. brainstorming, code-review',
+    'skills.field.desc': 'Description',
+    'skills.field.desc_placeholder': 'One-line description of purpose',
+    'skills.field.desc_optional': 'Description (optional)',
+    'skills.field.trigger': 'Trigger Condition (optional)',
+    'skills.field.trigger_placeholder': 'When should this skill activate?',
+    'skills.field.target_agent': 'Target Agent',
+    'skills.field.source_url': 'Source URL',
 };
 
 export default en;
