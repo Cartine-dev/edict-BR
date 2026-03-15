@@ -172,6 +172,17 @@ const zh = {
     'officials.label.gongbu': '工部',
     'officials.label.libu_hr': '吏部',
     'officials.label.zaochao': '钦天监',
+    'officials.rank.taizi': '储君',
+    'officials.rank.zhongshu': '正一品',
+    'officials.rank.menxia': '正一品',
+    'officials.rank.shangshu': '正一品',
+    'officials.rank.hubu': '正二品',
+    'officials.rank.libu': '正二品',
+    'officials.rank.bingbu': '正二品',
+    'officials.rank.xingbu': '正二品',
+    'officials.rank.gongbu': '正二品',
+    'officials.rank.libu_hr': '正二品',
+    'officials.rank.zaochao': '正三品',
 
     // ── Heartbeat status labels ───────────────────────────────────────────────
     'hb.active': '🟢 活跃',
@@ -614,6 +625,20 @@ const zh = {
     'template.tpl.tpl-standup.param.range.opt.今天': '今天',
     'template.tpl.tpl-standup.param.range.opt.最近24小时': '最近24小时',
     'template.tpl.tpl-standup.param.range.opt.昨天+今天': '昨天+今天',
+
+    // ── Model Config panel ────────────────────────────────────────────────────
+    'model.empty.start_local_server': '⚠️ 请先启动本地服务器',
+    'model.status.submitting': '⟳ 提交中…',
+    'model.status.submitted_restarting': '✅ 已提交，Gateway 重启中（约5秒）',
+    'model.toast.model_changed': '{agentId} 模型已更改',
+    'model.error.generic': '错误',
+    'model.error.cannot_connect': '❌ 无法连接服务器',
+    'model.label.current': '当前:',
+    'model.button.apply': '应用',
+    'model.button.reset': '重置',
+    'model.section.change_log': '变更日志',
+    'model.empty.no_changes': '暂无变更',
+    'model.status.rolled_back': '⚠ 已回滚',
 } as const;
 
 export default zh;

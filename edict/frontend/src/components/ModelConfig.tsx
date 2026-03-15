@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '../store';
 import { api } from '../api';
+import { useT } from '../i18n/hooks';
 
 const FALLBACK_MODELS = [
   { id: 'anthropic/claude-sonnet-4-6', l: 'Claude Sonnet 4.6', p: 'Anthropic' },
@@ -16,6 +17,9 @@ const FALLBACK_MODELS = [
 ];
 
 export default function ModelConfig() {
+  const T = useT();
+  const tOr = (key: string, fallback: string) => (T(key as any) as string) || fallback;
+
   const agentConfig = useStore((s) => s.agentConfig);
   const changeLog = useStore((s) => s.changeLog);
   const loadAgentConfig = useStore((s) => s.loadAgentConfig);
@@ -39,7 +43,7 @@ export default function ModelConfig() {
   }, [agentConfig]);
 
   if (!agentConfig?.agents) {
-    return <div className="empty" style={{ gridColumn: '1/-1' }}>⚠️ 请先启动本地服务器</div>;
+    return <div className="empty" style={{ gridColumn: '1/-1' }}>{T('model.empty.start_local_server')}</div>;
   }
 
   const models = agentConfig.knownModels?.length
@@ -58,18 +62,18 @@ export default function ModelConfig() {
   const applyModel = async (agentId: string) => {
     const model = selMap[agentId];
     if (!model) return;
-    setStatusMap((p) => ({ ...p, [agentId]: { cls: 'pending', text: '⟳ 提交中…' } }));
+    setStatusMap((p) => ({ ...p, [agentId]: { cls: 'pending', text: T('model.status.submitting') } }));
     try {
       const r = await api.setModel(agentId, model);
       if (r.ok) {
-        setStatusMap((p) => ({ ...p, [agentId]: { cls: 'ok', text: '✅ 已提交，Gateway 重启中（约5秒）' } }));
-        toast(agentId + ' 模型已更改', 'ok');
+        setStatusMap((p) => ({ ...p, [agentId]: { cls: 'ok', text: T('model.status.submitted_restarting') } }));
+        toast(T('model.toast.model_changed', { agentId }), 'ok');
         setTimeout(() => loadAgentConfig(), 5500);
       } else {
-        setStatusMap((p) => ({ ...p, [agentId]: { cls: 'err', text: '❌ ' + (r.error || '错误') } }));
+        setStatusMap((p) => ({ ...p, [agentId]: { cls: 'err', text: '❌ ' + (r.error || T('model.error.generic')) } }));
       }
     } catch {
-      setStatusMap((p) => ({ ...p, [agentId]: { cls: 'err', text: '❌ 无法连接服务器' } }));
+      setStatusMap((p) => ({ ...p, [agentId]: { cls: 'err', text: T('model.error.cannot_connect') } }));
     }
   };
 
@@ -86,14 +90,14 @@ export default function ModelConfig() {
                 <span className="mc-emoji">{ag.emoji || '🏛️'}</span>
                 <div>
                   <div className="mc-name">
-                    {ag.label}{' '}
+                    {tOr('officials.label.' + ag.id, ag.label)}{' '}
                     <span style={{ fontSize: 11, color: 'var(--muted)' }}>{ag.id}</span>
                   </div>
-                  <div className="mc-role">{ag.role}</div>
+                  <div className="mc-role">{tOr('officials.role.' + ag.id, ag.role)}</div>
                 </div>
               </div>
               <div className="mc-cur">
-                当前: <b>{ag.model}</b>
+                {T('model.label.current')} <b>{ag.model}</b>
               </div>
               <select className="msel" value={sel} onChange={(e) => handleSelect(ag.id, e.target.value)}>
                 {models.map((m) => (
@@ -104,10 +108,10 @@ export default function ModelConfig() {
               </select>
               <div className="mc-btns">
                 <button className="btn btn-p" disabled={!changed} onClick={() => applyModel(ag.id)}>
-                  应用
+                  {T('model.button.apply')}
                 </button>
                 <button className="btn btn-g" onClick={() => resetMC(ag.id)}>
-                  重置
+                  {T('model.button.reset')}
                 </button>
               </div>
               {st && <div className={`mc-st ${st.cls}`}>{st.text}</div>}
@@ -118,10 +122,10 @@ export default function ModelConfig() {
 
       {/* Change Log */}
       <div style={{ marginTop: 24 }}>
-        <div className="sec-title">变更日志</div>
+        <div className="sec-title">{T('model.section.change_log')}</div>
         <div className="cl-list">
           {!changeLog?.length ? (
-            <div style={{ fontSize: 12, color: 'var(--muted)', padding: '8px 0' }}>暂无变更</div>
+            <div style={{ fontSize: 12, color: 'var(--muted)', padding: '8px 0' }}>{T('model.empty.no_changes')}</div>
           ) : (
             [...changeLog]
               .reverse()
@@ -143,7 +147,7 @@ export default function ModelConfig() {
                           marginLeft: 4,
                         }}
                       >
-                        ⚠ 已回滚
+                        {T('model.status.rolled_back')}
                       </span>
                     )}
                   </span>

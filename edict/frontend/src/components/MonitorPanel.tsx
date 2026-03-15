@@ -11,6 +11,7 @@ export default function MonitorPanel() {
   const setModalTaskId = useStore((s) => s.setModalTaskId);
   const toast = useStore((s) => s.toast);
   const T = useT();
+  const tOr = (key: string, fallback: string) => (T(key as any) as string) || fallback;
 
   useEffect(() => {
     loadAgentsStatus();
@@ -79,13 +80,13 @@ export default function MonitorPanel() {
             {filtered.map((a) => {
               const canWake = a.status !== 'running' && a.status !== 'unconfigured' && gw?.alive;
               return (
-                <div key={a.id} className="as-card" title={`${a.role} · ${a.statusLabel}`}>
+                <div key={a.id} className="as-card" title={`${tOr(`officials.role.${a.id}`, a.role)} · ${a.statusLabel}`}>
                   <div className={`as-dot ${a.status}`} />
                   <div style={{ fontSize: 22 }}>{a.emoji}</div>
-                  <div style={{ fontSize: 12, fontWeight: 700 }}>{a.label}</div>
-                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{a.role}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700 }}>{tOr(`officials.label.${a.id}`, a.label)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{tOr(`officials.role.${a.id}`, a.role)}</div>
                   <div style={{ fontSize: 10, color: 'var(--muted)' }}>{a.statusLabel}</div>
-                  {a.lastActive ? (
+                  {a.lastActive && a.lastActive !== '无记录' ? (
                     <div style={{ fontSize: 10, color: 'var(--muted)' }}>⏰ {a.lastActive}</div>
                   ) : (
                     <div style={{ fontSize: 10, color: 'var(--muted)' }}>{T('monitor.agent.no_activity')}</div>
@@ -128,8 +129,8 @@ export default function MonitorPanel() {
               <div className="dc-hdr">
                 <span className="dc-emoji">{d.emoji}</span>
                 <div className="dc-info">
-                  <div className="dc-name">{d.label}</div>
-                  <div className="dc-role">{d.role} · {d.rank}</div>
+                  <div className="dc-name">{tOr(`officials.label.${d.id}`, d.label)}</div>
+                  <div className="dc-role">{tOr(`officials.role.${d.id}`, d.role)} · {tOr(`officials.rank.${d.id}`, d.rank)}</div>
                 </div>
                 <div className="dc-status">
                   <span className={`dc-dot ${dotCls}`} />

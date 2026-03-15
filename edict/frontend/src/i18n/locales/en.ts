@@ -170,6 +170,17 @@ const en: Record<TranslationKey, string> = {
     'officials.label.gongbu': 'Works',
     'officials.label.libu_hr': 'Personnel',
     'officials.label.zaochao': 'Imperial Observatory',
+    'officials.rank.taizi': 'Heir Apparent',
+    'officials.rank.zhongshu': 'Rank 1',
+    'officials.rank.menxia': 'Rank 1',
+    'officials.rank.shangshu': 'Rank 1',
+    'officials.rank.hubu': 'Rank 2',
+    'officials.rank.libu': 'Rank 2',
+    'officials.rank.bingbu': 'Rank 2',
+    'officials.rank.xingbu': 'Rank 2',
+    'officials.rank.gongbu': 'Rank 2',
+    'officials.rank.libu_hr': 'Rank 2',
+    'officials.rank.zaochao': 'Rank 3',
 
     // ── Heartbeat status labels ───────────────────────────────────────────────
     'hb.active': '🟢 Active',
@@ -612,6 +623,20 @@ const en: Record<TranslationKey, string> = {
     'template.tpl.tpl-standup.param.range.opt.今天': 'Today',
     'template.tpl.tpl-standup.param.range.opt.最近24小时': 'Last 24 Hours',
     'template.tpl.tpl-standup.param.range.opt.昨天+今天': 'Yesterday + Today',
+
+    // ── Model Config panel ────────────────────────────────────────────────────
+    'model.empty.start_local_server': '⚠️ Please start the local server first',
+    'model.status.submitting': '⟳ Submitting…',
+    'model.status.submitted_restarting': '✅ Submitted, Gateway restarting (approx 5s)',
+    'model.toast.model_changed': '{agentId} model changed',
+    'model.error.generic': 'Error',
+    'model.error.cannot_connect': '❌ Cannot connect to server',
+    'model.label.current': 'Current:',
+    'model.button.apply': 'Apply',
+    'model.button.reset': 'Reset',
+    'model.section.change_log': 'Change Log',
+    'model.empty.no_changes': 'No changes yet',
+    'model.status.rolled_back': '⚠ Rolled back',
 };
 
 export default en;
