@@ -413,6 +413,12 @@ const en: Record<TranslationKey, string> = {
     'morning.title': '🌅 Morning Brief',
     'morning.date_format': '$1-$2-$3',
 
+    // category display names (presentation layer — keys match CAT_META / payload keys)
+    'morning.cat.政治': 'Politics',
+    'morning.cat.军事': 'Military',
+    'morning.cat.经济': 'Economy',
+    'morning.cat.AI大模型': 'AI & LLMs',
+
     // labels
     'morning.label.collected_at': 'Collected at {time}',
     'morning.label.total_news': '{n} items',
@@ -449,6 +455,64 @@ const en: Record<TranslationKey, string> = {
     'morning.toast.feed_required': 'Please fill in feed name and URL',
     'morning.toast.config_saved': 'Subscription config saved',
     'morning.toast.save_fail': 'Save failed',
+
+    // ── Memorial panel ────────────────────────────────────────────────────────
+    'memorial.filter.label': 'Filter:',
+    'memorial.filter.all': 'All',
+    'memorial.filter.done': '✅ Done',
+    'memorial.filter.cancelled': '🚫 Cancelled',
+
+    'memorial.empty': 'No memorials yet — generated automatically when tasks complete',
+
+    'memorial.card.flow_steps': '{n} steps',
+
+    'memorial.phase.origin': 'Imperial Decree',
+    'memorial.phase.plan': 'Secretariat Plan',
+    'memorial.phase.review': 'Chancellery Review',
+    'memorial.phase.exec': 'Ministry Execution',
+    'memorial.phase.result': 'Final Report',
+
+    'memorial.label.output': '📦 Output',
+    'memorial.button.copy': '📋 Copy Memorial',
+
+    // export markdown labels (UI chrome — not backend content)
+    'memorial.export.header': '📜 Memorial · {title}',
+    'memorial.export.id': 'Task ID',
+    'memorial.export.state': 'Status',
+    'memorial.export.org': 'Department',
+    'memorial.export.start': 'Started',
+    'memorial.export.end': 'Completed',
+    'memorial.export.flow_section': 'Flow Log',
+    'memorial.export.output_section': 'Output',
+    'memorial.export.unknown_time': 'unknown',
+
+    'memorial.toast.copy_ok': '✅ Memorial copied as Markdown',
+    'memorial.toast.copy_err': 'Copy failed',
+
+    // Departments
+    'memorial.department.emperor': 'Emperor',
+    'memorial.department.taizi': 'Crown Prince',
+    'memorial.department.zhongshu': 'Secretariat',
+    'memorial.department.menxia': 'Chancellery',
+    'memorial.department.shangshu': 'Dept. of State',
+    'memorial.department.hubu': 'Revenue',
+    'memorial.department.gongbu': 'Works',
+    'memorial.department.bingbu': 'War',
+    'memorial.department.libu': 'Rites',
+    'memorial.department.xingbu': 'Justice',
+    'memorial.department.libu_hr': 'Personnel',
+
+    // Status & Flow Labels
+    'memorial.status.ready': 'Three Departments & Six Ministries system ready',
+    'memorial.status.init_done': '✅ 🎉 System initialization complete',
+    'memorial.status.dispatch_init': 'Dispatch: System initialization',
+    'memorial.status.approved': 'Approved',
+    'memorial.status.rejected': 'Vetoed',
+    'memorial.status.done': '✅ Complete',
+    'memorial.status.back': 'Reported Back',
+    'memorial.status.draft': 'Drafting',
+    'memorial.status.review': 'Reviewing',
+    'memorial.status.exec': 'Implementing',
 };
 
 export default en;

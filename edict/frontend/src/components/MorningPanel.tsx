@@ -3,6 +3,7 @@ import { useStore } from '../store';
 import { api } from '../api';
 import type { SubConfig, MorningNewsItem } from '../api';
 import { useT } from '../i18n/hooks';
+import type { TranslationKey } from '../i18n/locales/zh';
 
 const CAT_META: Record<string, { icon: string; color: string; desc: string }> = {
   '政治': { icon: '🏛️', color: '#6a9eff', desc: '全球政治动态' },
@@ -12,6 +13,17 @@ const CAT_META: Record<string, { icon: string; color: string; desc: string }> = 
 };
 
 const DEFAULT_CATS = ['政治', '军事', '经济', 'AI大模型'];
+
+/** Presentation-layer helper: translates a category payload key for display.
+ * Falls back to the raw key so unknown/user-defined categories still render. */
+function catLabel(
+  cat: string,
+  T: (key: TranslationKey, vars?: Record<string, string | number>) => string,
+): string {
+  const key = `morning.cat.${cat}` as TranslationKey;
+  const translated = T(key);
+  return translated === key ? cat : translated;
+}
 
 export default function MorningPanel() {
   const T = useT();
@@ -223,7 +235,7 @@ export default function MorningPanel() {
               <div className="mb-cat" key={cat}>
                 <div className="mb-cat-hdr">
                   <span className="mb-cat-icon">{meta.icon}</span>
-                  <span className="mb-cat-name" style={{ color: meta.color }}>{cat}</span>
+                  <span className="mb-cat-name" style={{ color: meta.color }}>{catLabel(cat, T)}</span>
                   <span className="mb-cat-cnt">{T('morning.label.item_count', { n: scored.length })}</span>
                 </div>
                 <div className="mb-news-list">
@@ -344,7 +356,7 @@ function SubConfigPanel({
                 style={{ cursor: 'pointer', padding: '6px 12px', borderRadius: 8, border: `1px solid ${on ? 'var(--acc)' : 'var(--line)'}`, display: 'flex', alignItems: 'center', gap: 6 }}
               >
                 <span>{meta.icon}</span>
-                <span style={{ fontSize: 12 }}>{cat}</span>
+                <span style={{ fontSize: 12 }}>{catLabel(cat, T)}</span>
                 {on && <span style={{ fontSize: 10, color: 'var(--ok)' }}>✓</span>}
               </div>
             );
@@ -385,7 +397,7 @@ function SubConfigPanel({
           <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4, fontSize: 11 }}>
             <span style={{ fontWeight: 600 }}>{f.name}</span>
             <span style={{ color: 'var(--muted)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.url}</span>
-            <span style={{ color: 'var(--acc)' }}>{f.category}</span>
+            <span style={{ color: 'var(--acc)' }}>{catLabel(f.category, T)}</span>
             <span style={{ cursor: 'pointer', color: 'var(--danger)' }} onClick={() => onRemoveFeed(i)}>✕</span>
           </div>
         ))}
@@ -396,7 +408,7 @@ function SubConfigPanel({
             style={{ flex: 1, padding: '6px 8px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 6, color: 'var(--text)', fontSize: 11, outline: 'none' }} />
           <select value={feedCat} onChange={(e) => setFeedCat(e.target.value)}
             style={{ padding: '6px 8px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: 6, color: 'var(--text)', fontSize: 11, outline: 'none' }}>
-            {allCats.map((c) => <option key={c} value={c}>{c}</option>)}
+            {allCats.map((c) => <option key={c} value={c}>{catLabel(c, T)}</option>)}
           </select>
           <button className="btn btn-g" onClick={() => { onAddFeed(feedName, feedUrl, feedCat); setFeedName(''); setFeedUrl(''); }} style={{ fontSize: 11, padding: '4px 12px' }}>
             {T('morning.button.add')}

@@ -415,6 +415,12 @@ const zh = {
     'morning.title': '🌅 天下要闻',
     'morning.date_format': '$1年$2月$3日',
 
+    // category display names (presentation layer — keys match CAT_META / payload keys)
+    'morning.cat.政治': '政治',
+    'morning.cat.军事': '军事',
+    'morning.cat.经济': '经济',
+    'morning.cat.AI大模型': 'AI大模型',
+
     // labels
     'morning.label.collected_at': '采集于 {time}',
     'morning.label.total_news': '共 {n} 条要闻',
@@ -451,6 +457,64 @@ const zh = {
     'morning.toast.feed_required': '请填写源名称和URL',
     'morning.toast.config_saved': '订阅配置已保存',
     'morning.toast.save_fail': '保存失败',
+
+    // ── Memorial panel ────────────────────────────────────────────────────────
+    'memorial.filter.label': '筛选：',
+    'memorial.filter.all': '全部',
+    'memorial.filter.done': '✅ 已完成',
+    'memorial.filter.cancelled': '🚫 已取消',
+
+    'memorial.empty': '暂无奏折 — 任务完成后自动生成',
+
+    'memorial.card.flow_steps': '流转 {n} 步',
+
+    'memorial.phase.origin': '圣旨原文',
+    'memorial.phase.plan': '中书规划',
+    'memorial.phase.review': '门下审议',
+    'memorial.phase.exec': '六部执行',
+    'memorial.phase.result': '汇总回奏',
+
+    'memorial.label.output': '📦 产出物',
+    'memorial.button.copy': '📋 复制奏折',
+
+    // export markdown labels (UI chrome — not backend content)
+    'memorial.export.header': '📜 奏折 · {title}',
+    'memorial.export.id': '任务编号',
+    'memorial.export.state': '状态',
+    'memorial.export.org': '负责部门',
+    'memorial.export.start': '开始时间',
+    'memorial.export.end': '完成时间',
+    'memorial.export.flow_section': '流转记录',
+    'memorial.export.output_section': '产出物',
+    'memorial.export.unknown_time': '未知',
+
+    'memorial.toast.copy_ok': '✅ 奏折已复制为 Markdown',
+    'memorial.toast.copy_err': '复制失败',
+
+    // Departments
+    'memorial.department.emperor': '皇上',
+    'memorial.department.taizi': '太子',
+    'memorial.department.zhongshu': '中书省',
+    'memorial.department.menxia': '门下省',
+    'memorial.department.shangshu': '尚书省',
+    'memorial.department.hubu': '户部',
+    'memorial.department.gongbu': '工部',
+    'memorial.department.bingbu': '兵部',
+    'memorial.department.libu': '礼部',
+    'memorial.department.xingbu': '刑部',
+    'memorial.department.libu_hr': '吏部',
+
+    // Status & Flow Labels
+    'memorial.status.ready': '三省六部系统已就绪',
+    'memorial.status.init_done': '✅ 🎉 系统初始化完成',
+    'memorial.status.dispatch_init': '派发：系统初始化',
+    'memorial.status.approved': '准奏',
+    'memorial.status.rejected': '封驳',
+    'memorial.status.done': '✅ 完成',
+    'memorial.status.back': '回奏',
+    'memorial.status.draft': '起草',
+    'memorial.status.review': '审议',
+    'memorial.status.exec': '落实',
 } as const;
 
 export default zh;
