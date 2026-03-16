@@ -104,7 +104,7 @@ export function getPipeStatus(t: Task): PipeStatus[] {
 
 export type TabKey =
   | 'edicts' | 'monitor' | 'officials' | 'models'
-  | 'skills' | 'sessions' | 'memorials' | 'templates' | 'morning';
+  | 'skills' | 'sessions' | 'memorials' | 'templates' | 'morning' | 'court';
 
 /** Bloco A: label → labelKey (key em tabs.*) para i18n via t(def.labelKey) no render */
 export const TAB_DEFS: { key: TabKey; labelKey: TranslationKey; icon: string }[] = [
@@ -132,7 +132,7 @@ export const DEPTS = [
   { id: 'xingbu', label: '刑部', emoji: '⚖️', role: '刑部尚书', rank: '正二品' },
   { id: 'gongbu', label: '工部', emoji: '🔧', role: '工部尚书', rank: '正二品' },
   { id: 'libu_hr', label: '吏部', emoji: '👔', role: '吏部尚书', rank: '正二品' },
-  { id: 'zaochao', label: '钦天监', emoji: '🌟', role: '朝报官', rank: '正三品' },
+  { id: 'zaochao', label: '钦天监', emoji: '📰', role: '朝报官', rank: '正三品' },
 ];
 
 // ── Templates ──
