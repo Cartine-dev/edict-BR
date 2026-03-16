@@ -13,6 +13,7 @@ import TaskModal from './components/TaskModal';
 // ConfirmDialog is used inside TaskModal as needed
 import Toaster from './components/Toaster';
 import CourtCeremony from './components/CourtCeremony';
+import CourtDiscussion from './components/CourtDiscussion';
 import { useT } from './i18n/hooks';
 
 export default function App() {
@@ -100,6 +101,7 @@ export default function App() {
 
       {/* ── Panels ── */}
       {activeTab === 'edicts' && <EdictBoard />}
+      {activeTab === 'court' && <CourtDiscussion />}
       {activeTab === 'monitor' && <MonitorPanel />}
       {activeTab === 'officials' && <OfficialPanel />}
       {activeTab === 'models' && <ModelConfig />}
