@@ -5,6 +5,10 @@
 
 import { create } from 'zustand';
 import type { Lang } from './i18n/types';
+import type { TranslationKey } from './i18n/locales/zh';
+
+/** Tipo mínimo do helper de tradução (para funções fora do React) */
+export type TFn = (key: TranslationKey, vars?: Record<string, string | number>) => string;
 import {
   api,
   type Task,
@@ -41,21 +45,37 @@ export const DEPT_COLOR: Record<string, string> = {
   '工部': '#44aaff', '吏部': '#9b59b6', '皇上': '#ffd700', '回奏': '#2ecc8a',
 };
 
-export const STATE_LABEL: Record<string, string> = {
-  Inbox: '收件', Pending: '待处理', Taizi: '太子分拣', Zhongshu: '中书起草',
-  Menxia: '门下审议', Assigned: '已派发', Doing: '执行中', Review: '待审查',
-  Done: '已完成', Blocked: '阻塞', Cancelled: '已取消', Next: '待执行',
+/** Mapa estado → i18n key (Bloco B) */
+export const STATE_LABEL_KEY: Record<string, TranslationKey> = {
+  Inbox: 'state.Inbox',
+  Pending: 'state.Pending',
+  Taizi: 'state.Taizi',
+  Zhongshu: 'state.Zhongshu',
+  Menxia: 'state.Menxia',
+  Assigned: 'state.Assigned',
+  Doing: 'state.Doing',
+  Review: 'state.Review',
+  Done: 'state.Done',
+  Blocked: 'state.Blocked',
+  Cancelled: 'state.Cancelled',
+  Next: 'state.Next',
 };
 
 export function deptColor(d: string): string {
   return DEPT_COLOR[d] || '#6a9eff';
 }
 
-export function stateLabel(t: Task): string {
-  const r = t.review_round || 0;
-  if (t.state === 'Menxia' && r > 1) return `门下审议（第${r}轮）`;
-  if (t.state === 'Zhongshu' && r > 0) return `中书修订（第${r}轮）`;
-  return STATE_LABEL[t.state] || t.state;
+/**
+ * stateLabel — Bloco B
+ * Aceita t (TFn) como parâmetro para funcionar fora do React.
+ * Uso: stateLabel(task, T) onde T = useT() no componente.
+ */
+export function stateLabel(task: Task, t: TFn): string {
+  const r = task.review_round || 0;
+  if (task.state === 'Menxia' && r > 1) return t('state.Menxia.round', { r });
+  if (task.state === 'Zhongshu' && r > 0) return t('state.Zhongshu.round', { r });
+  const key = STATE_LABEL_KEY[task.state];
+  return key ? t(key) : task.state;
 }
 
 export function isEdict(t: Task): boolean {
@@ -86,16 +106,17 @@ export type TabKey =
   | 'edicts' | 'monitor' | 'officials' | 'models'
   | 'skills' | 'sessions' | 'memorials' | 'templates' | 'morning';
 
-export const TAB_DEFS: { key: TabKey; label: string; icon: string }[] = [
-  { key: 'edicts', label: '旨意看板', icon: '📜' },
-  { key: 'monitor', label: '省部调度', icon: '🏛️' },
-  { key: 'officials', label: '官员总览', icon: '👔' },
-  { key: 'models', label: '模型配置', icon: '🤖' },
-  { key: 'skills', label: '技能配置', icon: '🎯' },
-  { key: 'sessions', label: '小任务', icon: '💬' },
-  { key: 'memorials', label: '奏折阁', icon: '📜' },
-  { key: 'templates', label: '旨库', icon: '📋' },
-  { key: 'morning', label: '天下要闻', icon: '🌅' },
+/** Bloco A: label → labelKey (key em tabs.*) para i18n via t(def.labelKey) no render */
+export const TAB_DEFS: { key: TabKey; labelKey: TranslationKey; icon: string }[] = [
+  { key: 'edicts', labelKey: 'tabs.edicts', icon: '📜' },
+  { key: 'monitor', labelKey: 'tabs.monitor', icon: '🏛️' },
+  { key: 'officials', labelKey: 'tabs.officials', icon: '👔' },
+  { key: 'models', labelKey: 'tabs.models', icon: '🤖' },
+  { key: 'skills', labelKey: 'tabs.skills', icon: '🎯' },
+  { key: 'sessions', labelKey: 'tabs.sessions', icon: '💬' },
+  { key: 'memorials', labelKey: 'tabs.memorials', icon: '📜' },
+  { key: 'templates', labelKey: 'tabs.templates', icon: '📋' },
+  { key: 'morning', labelKey: 'tabs.morning', icon: '🌅' },
 ];
 
 // ── DEPTS for monitor ──
@@ -456,18 +477,23 @@ export function esc(s: string | undefined | null): string {
     .replace(/"/g, '&quot;');
 }
 
-export function timeAgo(iso: string | undefined): string {
+/**
+ * timeAgo — Bloco C
+ * Aceita t (TFn) como parâmetro para funcionar fora do React.
+ * Uso: timeAgo(iso, T) onde T = useT() no componente.
+ */
+export function timeAgo(iso: string | undefined, t: TFn): string {
   if (!iso) return '';
   try {
     const d = new Date(iso.includes('T') ? iso : iso.replace(' ', 'T') + 'Z');
     if (isNaN(d.getTime())) return '';
     const diff = Date.now() - d.getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return '刚刚';
-    if (mins < 60) return mins + '分钟前';
+    if (mins < 1) return t('time.just_now');
+    if (mins < 60) return t('time.minutes_ago', { n: mins });
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return hrs + '小时前';
-    return Math.floor(hrs / 24) + '天前';
+    if (hrs < 24) return t('time.hours_ago', { n: hrs });
+    return t('time.days_ago', { n: Math.floor(hrs / 24) });
   } catch {
     return '';
   }

@@ -2,12 +2,44 @@ import { useState } from 'react';
 import { useStore, TEMPLATES, TPL_CATS } from '../store';
 import type { Template } from '../store';
 import { api } from '../api';
+import { useT } from '../i18n/hooks';
 
 export default function TemplatePanel() {
+  const T = useT();
   const tplCatFilter = useStore((s) => s.tplCatFilter);
   const setTplCatFilter = useStore((s) => s.setTplCatFilter);
   const toast = useStore((s) => s.toast);
   const loadAll = useStore((s) => s.loadAll);
+
+  const tOr = (key: string, fallback: string) => (T(key as any) as string) || fallback;
+
+  const catKeyMap: Record<string, string> = {
+    '日常办公': 'template.cat.daily_office',
+    '数据分析': 'template.cat.data_analysis',
+    '工程开发': 'template.cat.engineering',
+    '内容创作': 'template.cat.content',
+  };
+  const catLabel = (c: string) => c === '全部' ? T('template.filter.all') : tOr(catKeyMap[c] || '', c);
+
+  const deptKeyMap: Record<string, string> = {
+    '太子': 'officials.label.taizi',
+    '中书省': 'officials.label.zhongshu',
+    '门下省': 'officials.label.menxia',
+    '尚书省': 'officials.label.shangshu',
+    '礼部': 'officials.label.libu',
+    '户部': 'officials.label.hubu',
+    '兵部': 'officials.label.bingbu',
+    '刑部': 'officials.label.xingbu',
+    '工部': 'officials.label.gongbu',
+    '吏部': 'officials.label.libu_hr',
+  };
+  // Fallback map checks officials.label, then tries memorial.department (for 皇上 etc), or raw name
+  const deptLabel = (d: string) => tOr(deptKeyMap[d] || (d === '皇上' ? 'memorial.department.emperor' : ''), d);
+
+  const tplName = (t: Template) => tOr(`template.tpl.${t.id}.name`, t.name);
+  const tplDesc = (t: Template) => tOr(`template.tpl.${t.id}.desc`, t.desc);
+  const paramLabel = (tplId: string, pKey: string, fallback: string) => tOr(`template.tpl.${tplId}.param.${pKey}`, fallback);
+  const optionLabel = (tplId: string, pKey: string, opt: string) => tOr(`template.tpl.${tplId}.param.${pKey}.opt.${opt}`, opt);
 
   const [formTpl, setFormTpl] = useState<Template | null>(null);
   const [formVals, setFormVals] = useState<Record<string, string>>({});
@@ -44,7 +76,7 @@ export default function TemplatePanel() {
     if (!formTpl) return;
     const cmd = buildCmd(formTpl);
     if (!cmd.trim()) {
-      toast('请填写必填参数', 'err');
+      toast(T('template.toast.req_params'), 'err');
       return;
     }
 
@@ -52,14 +84,14 @@ export default function TemplatePanel() {
     try {
       const st = await api.agentsStatus();
       if (st.ok && st.gateway && !st.gateway.alive) {
-        toast('⚠️ Gateway 未启动，任务将无法派发！', 'err');
-        if (!confirm('Gateway 未启动，继续？')) return;
+        toast(T('template.toast.gw_down'), 'err');
+        if (!confirm(T('template.confirm.gw_down'))) return;
       }
     } catch {
       /* ignore */
     }
 
-    if (!confirm(`确认下旨？\n\n${cmd.substring(0, 200)}${cmd.length > 200 ? '…' : ''}`)) return;
+    if (!confirm(T('template.confirm.issue', { snippet: `${cmd.substring(0, 200)}${cmd.length > 200 ? '…' : ''}` }))) return;
 
     try {
       const params: Record<string, string> = {};
@@ -75,14 +107,14 @@ export default function TemplatePanel() {
         params,
       });
       if (r.ok) {
-        toast(`📜 ${r.taskId} 旨意已下达`, 'ok');
+        toast(T('template.toast.issued', { taskId: String(r.taskId) }), 'ok');
         setFormTpl(null);
         loadAll();
       } else {
-        toast(r.error || '下旨失败', 'err');
+        toast(r.error || T('template.error.issue_failed'), 'err');
       }
     } catch {
-      toast('⚠️ 服务器连接失败', 'err');
+      toast(T('template.toast.srv_err'), 'err');
     }
   };
 
@@ -96,7 +128,7 @@ export default function TemplatePanel() {
             className={`tpl-cat${tplCatFilter === c.name ? ' active' : ''}`}
             onClick={() => setTplCatFilter(c.name)}
           >
-            {c.icon} {c.name}
+            {c.icon} {catLabel(c.name)}
           </span>
         ))}
       </div>
@@ -107,18 +139,18 @@ export default function TemplatePanel() {
           <div className="tpl-card" key={t.id}>
             <div className="tpl-top">
               <span className="tpl-icon">{t.icon}</span>
-              <span className="tpl-name">{t.name}</span>
+              <span className="tpl-name">{tplName(t)}</span>
             </div>
-            <div className="tpl-desc">{t.desc}</div>
+            <div className="tpl-desc">{tplDesc(t)}</div>
             <div className="tpl-footer">
               {t.depts.map((d) => (
-                <span className="tpl-dept" key={d}>{d}</span>
+                <span className="tpl-dept" key={d}>{deptLabel(d)}</span>
               ))}
               <span className="tpl-est">
                 {t.est} · {t.cost}
               </span>
               <button className="tpl-go" onClick={() => openForm(t)}>
-                下旨
+                {T('template.button.issue')}
               </button>
             </div>
           </div>
@@ -132,15 +164,15 @@ export default function TemplatePanel() {
             <button className="modal-close" onClick={() => setFormTpl(null)}>✕</button>
             <div className="modal-body">
               <div style={{ fontSize: 11, color: 'var(--acc)', fontWeight: 700, letterSpacing: '.04em', marginBottom: 4 }}>
-                圣旨模板
+                {T('template.label.template')}
               </div>
               <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
-                {formTpl.icon} {formTpl.name}
+                {formTpl.icon} {tplName(formTpl)}
               </div>
-              <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 18 }}>{formTpl.desc}</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 18 }}>{tplDesc(formTpl)}</div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 18, flexWrap: 'wrap' }}>
                 {formTpl.depts.map((d) => (
-                  <span className="tpl-dept" key={d}>{d}</span>
+                  <span className="tpl-dept" key={d}>{deptLabel(d)}</span>
                 ))}
                 <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 'auto' }}>
                   {formTpl.est} · {formTpl.cost}
@@ -151,7 +183,7 @@ export default function TemplatePanel() {
                 {formTpl.params.map((p) => (
                   <div className="tpl-field" key={p.key}>
                     <label className="tpl-label">
-                      {p.label}
+                      {paramLabel(formTpl.id, p.key, p.label)}
                       {p.required && <span style={{ color: '#ff5270' }}> *</span>}
                     </label>
                     {p.type === 'textarea' ? (
@@ -169,7 +201,7 @@ export default function TemplatePanel() {
                         onChange={(e) => setFormVals((v) => ({ ...v, [p.key]: e.target.value }))}
                       >
                         {(p.options || []).map((o) => (
-                          <option key={o}>{o}</option>
+                          <option key={o} value={o}>{optionLabel(formTpl.id, p.key, o)}</option>
                         ))}
                       </select>
                     ) : (
@@ -197,7 +229,7 @@ export default function TemplatePanel() {
                     }}
                   >
                     <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>
-                      📜 将发送给中书省的旨意：
+                      {T('template.preview.title', { org: T('officials.label.zhongshu') })}
                     </div>
                     <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{previewCmd}</div>
                   </div>
@@ -205,10 +237,10 @@ export default function TemplatePanel() {
 
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
                   <button type="button" className="btn btn-g" onClick={preview} style={{ padding: '8px 16px', fontSize: 12 }}>
-                    👁 预览旨意
+                    {T('template.button.preview')}
                   </button>
                   <button type="submit" className="tpl-go" style={{ padding: '8px 20px', fontSize: 13 }}>
-                    📜 下旨
+                    {T('template.button.submit')}
                   </button>
                 </div>
               </form>

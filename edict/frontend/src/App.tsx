@@ -92,7 +92,7 @@ export default function App() {
             className={`tab ${activeTab === t.key ? 'active' : ''}`}
             onClick={() => setActiveTab(t.key)}
           >
-            {t.icon} {t.label}
+            {t.icon} {T(t.labelKey)}
             {tabBadge(t.key) && <span className="tbadge">{tabBadge(t.key)}</span>}
           </div>
         ))}
